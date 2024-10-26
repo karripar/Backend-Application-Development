@@ -1,4 +1,5 @@
-const formatTimestamp = () => {
+// utils.js
+const formatTimestamp = () => { // format the timestamp to be in the format 'YYYY-MM-DD HH:MM:SS'
     return new Date().toLocaleString('fi-FI', {
         year: 'numeric',
         month: '2-digit',

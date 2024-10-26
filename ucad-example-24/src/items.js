@@ -1,6 +1,7 @@
 import { formatTimestamp } from "./utils.js";
 
-const items = [{
+// items.js
+const items = [{ // initial items
     "id": 1,
     "name": "item1",
     "timestamp": formatTimestamp()
@@ -11,9 +12,9 @@ const items = [{
 }];
 
 
-const getItems = (res) => {
+/*const getItems = (res) => { // get all items
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(items)); };
+    res.end(JSON.stringify(items)); };*/
 
 const postItem = (req, res) => {
     let body = [];
@@ -35,7 +36,7 @@ const postItem = (req, res) => {
   });
  };
 
-const updateItem = (req, res) => {
+const updateItem = (req, res) => { // update an item (name)
     let body = [];
     req.on('data', chunk => {
         body.push(chunk);
@@ -43,9 +44,9 @@ const updateItem = (req, res) => {
         body = Buffer.concat(body).toString();
         try {
             const updatedItem = JSON.parse(body);
-            const index = items.findIndex(item => item.id === updatedItem.id);
+            const index = items.findIndex(item => item.id === updatedItem.id); // find the index of the item to update
             if (index != -1) {
-                items[index].name = updatedItem.name || items[index].name;
+                items[index].name = updatedItem.name || items[index].name; // update the name if provided
                 items[index].timestamp = formatTimestamp();
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify({message: 'Item updated'}));
@@ -61,7 +62,7 @@ const updateItem = (req, res) => {
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res) => { // delete an item
     let body = [];
     req.on('data', chunk => {
         body.push(chunk);
@@ -69,9 +70,9 @@ const deleteItem = (req, res) => {
         body = Buffer.concat(body).toString();
         try {
             const deletedItem = JSON.parse(body);
-            const index = items.findIndex(item => item.id === deletedItem.id);
-            if (index != -1) {
-                items.splice(index, 1);
+            const index = items.findIndex(item => item.id === deletedItem.id); // find the index of the item to delete
+            if (index != -1) { // if the item exists
+                items.splice(index, 1); // delete the item
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify({message: 'Item deleted'}));
             } else {
@@ -84,6 +85,42 @@ const deleteItem = (req, res) => {
             res.end(JSON.stringify({error: '400', message: ' Invalid request'}));
         }
     });
+}
+
+
+const getItems = (req, res) => { // search for items by name or get all items
+    let body = [];
+    req.on('data', chunk => {
+        body.push(chunk);
+    }).on('end', () => {
+        body = Buffer.concat(body).toString();
+
+        try {
+            const url = req.url.split('?'); // split the url into the path and the query string
+            let filteredItems = items;
+
+            if (url.length > 1) {
+                const query = new URLSearchParams(url[1]); // get the query string
+                const search = query.get('search');
+
+                if (search) {
+                    filteredItems = items.filter(item => item.name.toLowerCase().includes(search.toLowerCase())); // filter items by name
+                }
+
+                if (filteredItems.length === 0) {
+                    res.writeHead(404, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({error: '404', message: 'No item found'}));
+                    return;
+                }
+            }
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(filteredItems));
+        } catch (error) {
+            console.log('error: ', error);
+            res.writeHead(400, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({error: '400', message: ' Invalid request, no item found'}));
+        }
+    })   
 }
 
 

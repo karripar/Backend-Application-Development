@@ -3,8 +3,23 @@ Simple REST API example -->
 ----------------**Used endpoints:**-------------------------
 
 "**GET /items** fetches all items"
--fetches all items from the REST API endpoint
+-fetches all items from the REST API endpoint or searches for specific items.
+-returns a list of items
+*Fetch all items* -->
+GET /items
 
+*Search for items* -->
+GET /items?search=yourSearchTermHere
+
+*Expected example Response* -->
+{
+    "id": 1,
+    "name": "yourSearchTerm",
+    "timestamp": ""2024-10-24T12"
+}
+
+
+--------------------------------------------------------------
 
 "**POST /items** Adds a new item"
 -example Request body format: {"name": "Banana"}
@@ -17,16 +32,18 @@ Simple REST API example -->
     "item": {
         "id": 3,
         "name": "Banana",
-        "timestamp": "2024-10-24T12
+        "timestamp": "2024-10-24T12"
     }
 }
 
+-------------------------------------------------------------
 
 "**PUT /items**: modifies pre-existing items"
 -Changes the item name
 -Example Request body format: {"id": x, "name": "Banana"}
 -Expected response: {"message": "Item updated"}
 
+-------------------------------------------------------------
 
 "**DELETE /items**: Deletes a specified item"
 -Deletes an item based on the id provided by the user
