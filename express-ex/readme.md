@@ -17,7 +17,7 @@ To interact with the API:
    Start the server by executing:
    npm run dev
 
-2. Open the server location: 127.0.0.1:3000 or the documentation locations for more detail.
+2. Open the server location: 127.0.0.1:3000 or the documentation locations explained above for more detail.
 
 
 ## API Endpoints -->
