@@ -52,56 +52,91 @@ const mediaItems = [
   },
 ];
 
-
+/**
+ * Retrieves all media items and sends them as a JSON response.
+ * @function
+ * @param {Object} res - The response object used to send the JSON response.
+ */
 const getItems = (res) => {
   res.json(mediaItems);
 };
 
+/**
+ * Adds a new media item to the mediaItems array.
+ * Logs the request body and assigns a new media ID to the item.
+ * Sends a response with the newly created media item's ID.
+ * @function
+ * @param {Object} req - The request object containing the new media data in the body.
+ * @param {Object} res - The response object used to send the response.
+ */
 const postItem = (req, res) => {
   console.log('post req body', req.body);
   const newItem = req.body;
-  newItem.media_id = mediaItems[mediaItems.length - 1].id + 1;
-  mediaItems.push(newItem);
-  res.status(201).json({message: 'Item added', id: newItem.media_id});
+  newItem.media_id = mediaItems[mediaItems.length - 1].media_id + 1; // Assign new media ID
+  mediaItems.push(newItem); // Add the new media item to the array
+  res.status(201).json({ message: 'Item added', id: newItem.media_id });
 };
 
+/**
+ * Retrieves a media item by its media ID.
+ * If the item is found, it sends the item as a JSON response.
+ * If a 'plain' format is requested, it sends just the item title.
+ * If the item is not found, it sends a 404 error response.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the response.
+ */
 const getItemById = (req, res) => {
-  const id = parseInt(req.params.id);
-  const item = mediaItems.find((item) => item.media_id === id);
+  const id = parseInt(req.params.id); // Parse media ID from URL parameter
+  const item = mediaItems.find((item) => item.media_id === id); // Find the media item by ID
   if (item) {
     if (req.query.format === 'plain') {
-      res.send(item.title);
+      res.send(item.title); // Send media title if 'plain' format is requested
     } else {
-      res.json(item);
+      res.json(item); // Send media item as JSON
     }
   } else {
-    res.status(404).json({message: 'Item not found'});
+    res.status(404).json({ message: 'Item not found' }); // Item not found response
   }
 };
 
-
+/**
+ * Deletes a media item by its media ID.
+ * If the item is found, it removes it from the mediaItems array and sends a 204 No Content response.
+ * If the item is not found, it sends a 404 error response.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the response.
+ */
 const deleteItem = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = mediaItems.findIndex((item) => item.media_id === id);
+  const id = parseInt(req.params.id); // Parse media ID from URL parameter
+  const index = mediaItems.findIndex((item) => item.media_id === id); // Find index of the media item
   if (index !== -1) {
-    mediaItems.splice(index, 1);
-    res.status(204).send();
+    mediaItems.splice(index, 1); // Remove the media item from the array
+    res.status(204).send(); // Send No Content response
   } else {
-    res.status(404).json({message: 'Item not found'});
+    res.status(404).json({ message: 'Item not found' }); // Item not found response
   }
 };
 
-
+/**
+ * Modifies an existing media item by its media ID.
+ * If the item is found, it updates its data with the request body and sends a response indicating success.
+ * If the item is not found, it sends a 404 error response.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters and updated data in the body.
+ * @param {Object} res - The response object used to send the response.
+ */
 const modifyItem = (req, res) => {
-  const id = parseInt(req.params.id);
-  const item = mediaItems.find((item) => item.media_id === id);
+  const id = parseInt(req.params.id); // Parse media ID from URL parameter
+  const item = mediaItems.find((item) => item.media_id === id); // Find the media item by ID
   if (item) {
-    const index = mediaItems.indexOf(item);
-    mediaItems[index] = req.body;
-    res.json({message: 'Item updated', id: id});
+    const index = mediaItems.indexOf(item); // Get the index of the media item
+    mediaItems[index] = req.body; // Update the media item data
+    res.json({ message: 'Item updated', id: id }); // Send success response
   } else {
-    res.status(404).json({message: 'Item not found'});
+    res.status(404).json({ message: 'Item not found' }); // Item not found response
   }
 };
 
-export {getItems, postItem, getItemById, mediaItems, deleteItem, modifyItem};
+export { getItems, postItem, getItemById, mediaItems, deleteItem, modifyItem };
