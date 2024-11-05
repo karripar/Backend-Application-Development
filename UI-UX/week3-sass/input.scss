@@ -1,0 +1,97 @@
+@import '_base.scss';
+
+%borderbox {
+    border: 2px solid $hot-pink;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+
+body {
+  margin: 0;
+  font: $main-font;
+}
+ol {
+  width: 200px;
+
+  li {
+    span {
+      color: $hot-pink;
+      padding-left: 16px;
+    }
+  }
+}
+
+ul {
+  &.topnav {
+    list-style-type: none;
+    margin: 0 0 $small-margin;
+    padding: $no-padding;
+    overflow: hidden;
+    background-color: $hot-pink;
+
+    li {
+      float: left;
+
+      &.right {
+        float: right;
+      }
+
+      a {
+        display: block;
+        color: $white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+
+        &:hover:not(.active) {
+          background-color: $warm-pink;
+        }
+
+        &.active {
+          background-color: $almost-black;
+        }
+      }
+    }
+  }
+}
+
+/* use a mixing for centering */
+/* https://css-tricks.com/snippets/sass/centering-mixin/ */
+
+/* Mixins normally set many properties */
+
+@mixin center-it($width) {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: $width;
+}
+
+.center {
+    @include center-it(30%);
+}
+
+.content {
+  padding: $no-padding 16px;
+  width: 80%;
+  text-align: initial;
+}
+
+.box {
+  width: 50%;
+  @extend %borderbox;
+}
+
+img {
+  margin-bottom: $small-margin;
+}
+
+@media screen and (max-width: 600px) {
+  ul.topnav li.right,
+  ul.topnav li {
+    float: none;
+  }
+}
