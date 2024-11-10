@@ -8,6 +8,7 @@ This script sets up the **Tataki** database for a restaurant ordering and review
 - Inserts mock data for testing.
 - Provides example queries for retrieving reviews, orders, and top-rated menu items.
 - Includes deletion queries.
+- Inludes update queries for updating the user details etc.
 
 ## Usage
 1. Run the script in your MySQL client to set up the database and tables with "source path/to/your/script-file"
