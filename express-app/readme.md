@@ -16,14 +16,14 @@ To interact with the API:
 ### MySQL-Connection
 1. Clone
 2. Run `npm install`
-3. Create database
+3. Create the database with the source file: `media-db.sql` in the db directory.
 4. Create an .env-file, see (`.env.sample`)
 
 1. **Run the Server**:
    Start the server by executing:
    `npm run dev`
 
-2. Open the server location: 127.0.0.1:3000 or the documentation locations explained above for more detail.
+2. Open the server location: `127.0.0.1:3000` or the documentation locations explained above for more detail.
 
 ---
 
@@ -119,10 +119,12 @@ To interact with the API:
 
 - **GET** `/api/ratings/media/:id`  
   - Retrieves all ratings associated with a specific media item by its ID.
+  - ie `/api/ratings/media/2`
 
 
 - **GET** `/api/ratings/user/:id`  
   - Retrieves all ratings submitted by a specific user by their ID.
+  -ie `/api/ratings/user/3`
 
 
 - **POST** `/api/ratings`  
