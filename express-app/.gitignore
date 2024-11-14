@@ -1,0 +1,8 @@
+node_modules/
+media/**/*.png
+# ignore content of uploads folder
+uploads/*
+# except one (empty) file to have the folder in version control
+!uploads/.gitkeep
+# ignore .env file
+.env
