@@ -58,7 +58,7 @@ const getRatingsByUserId = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const ratings = await fetchRatingsByUserId(id);
-    if (ratings) {
+    if (ratings && ratings.length > 0) {
       res.json(ratings);
     } else {
       res.status(404).json({message: 'Ratings not found'});
@@ -79,7 +79,7 @@ const getRatingsByMediaId = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const ratings = await fetchRatingsByMediaId(id);
-    if (ratings) {
+    if (ratings && ratings.length > 0) {
       res.json(ratings);
     } else {
       res.status(404).json({message: 'Ratings not found for media ID ' + id});

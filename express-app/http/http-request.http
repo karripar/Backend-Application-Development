@@ -128,7 +128,7 @@ GET http://localhost:3000/api/ratings/2
 GET http://localhost:3000/api/ratings/media/3
 
 ### Get all ratings for a specific user
-GET http://localhost:3000/api/ratings/user/3
+GET http://localhost:3000/api/ratings/user/44
 
 ### Test not found (invalid rating ID)
 GET http://localhost:3000/api/ratings/963
@@ -144,7 +144,7 @@ Content-Type: application/json
 }
 
 ### Modify an existing rating by ID
-PUT http://localhost:3000/api/ratings/3
+PUT http://localhost:3000/api/ratings/2
 Content-Type: application/json
 
 {
