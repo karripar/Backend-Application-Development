@@ -15,13 +15,13 @@ To interact with the API:
 
 ### MySQL-Connection
 1. Clone
-2. Run "npm install"
+2. Run `npm install`
 3. Create database
 4. Create an .env-file, see (`.env.sample`)
 
 1. **Run the Server**:
    Start the server by executing:
-   npm run dev
+   `npm run dev`
 
 2. Open the server location: 127.0.0.1:3000 or the documentation locations explained above for more detail.
 
@@ -31,15 +31,15 @@ To interact with the API:
 
 ### Media Endpoints
 
-- **GET /api/media**
+- **GET** `/api/media`
   - Retrieves a list of all media items.
   
 
-- **GET /api/media/:id**
+- **GET** `/api/media/:id`
   - Retrieves a single media item by its unique ID.
 
 
-- **POST /api/media**
+- **POST** `/api/media`
   - Adds a new media item. 
   - **Request Body**: JSON payload with media details.
   - ie.
@@ -54,7 +54,7 @@ To interact with the API:
   }
 
 
-- **PUT /api/media/:id**
+- **PUT** `/api/media/:id`
   - Updates an existing media item by ID.
   - **Request Body**: JSON payload with updated media details.
   ```json
@@ -72,15 +72,16 @@ To interact with the API:
 
 ### User Endpoints
 
-- **GET /api/users**
+- **GET** `/api/users`
   - Retrieves a list of all users.
 
 
-- **GET /api/users/:id**
+- **GET** `/api/users/:id`
   - Retrieves a single user by their ID.
+  - ie. `/api/users/3`
 
 
-- **POST /api/users**
+- **POST** `/api/users`
   - Adds a new user.
   - **Request Body**: JSON payload with user information.
   ```json
@@ -92,7 +93,7 @@ To interact with the API:
   }
 
 
-- **PUT /api/users/:id**
+- **PUT** `/api/users/:id`
   - Updates user information based on user ID.
   - **Request Body**: JSON payload with updated user details.
   ```json
@@ -104,27 +105,27 @@ To interact with the API:
   }
 
 
-- **DELETE /api/users/:id**
+- **DELETE** `/api/users/:id`
   - Deletes a user based on their ID.
-  -ie. /api/users/305
+  -ie. `/api/users/305`
 
 ---
 
 ### Rating Endpoints
 
-- **GET /api/ratings**  
+- **GET** `/api/ratings`  
   - Retrieves a list of all ratings.
 
 
-- **GET /api/ratings/media/:id**  
+- **GET** `/api/ratings/media/:id`  
   - Retrieves all ratings associated with a specific media item by its ID.
 
 
-- **GET /api/ratings/user/:id**  
+- **GET** `/api/ratings/user/:id`  
   - Retrieves all ratings submitted by a specific user by their ID.
 
 
-- **POST /api/ratings**  
+- **POST** `/api/ratings`  
   - Adds a new rating.
   - **Request Body**: JSON payload with rating details.
   ```json
@@ -135,7 +136,7 @@ To interact with the API:
   }
 
 
-- **DELETE /api/ratings/:id**  
+- **DELETE** `/api/ratings/:id`  
   - Deletes a rating by its unique ID.
   - **Example Request**: `/api/ratings/10`
   - **Response**: 
@@ -143,7 +144,7 @@ To interact with the API:
     - `404 Not Found`: Rating with specified ID does not exist.
 
 
-- **PUT /api/ratings/:id**  
+- **PUT** `/api/ratings/:id`  
   - Updates an existing rating by its unique ID.
   - **Request Body**: JSON payload with the updated rating value (between 1 and 5).
   - **Example Request**:
