@@ -43,20 +43,30 @@ To interact with the API:
   - Adds a new media item. 
   - **Request Body**: JSON payload with media details.
   - ie.
+  ```json
   {
     "filename": "uusi.jpg",
     "filesize": 887574,
     "title": "Uusi kuva",
     "description": "testikuvaus",
     "user_id": 1606,
-    "media_type": "image/jpeg",
-    "created_at": "2023-10-16T19:00:09.000Z"
+    "media_type": "image/jpeg"
   }
 
 
 - **PUT /api/media/:id**
   - Updates an existing media item by ID.
   - **Request Body**: JSON payload with updated media details.
+  ```json
+  {
+  "title": "new picture",
+  "description": "new information about the cat",
+  "user_id": 3,
+  "filename": "cat.png",
+  "filesize": 123456,
+  "media_type": "image/png"
+  }
+
 
 ---
 
@@ -73,11 +83,25 @@ To interact with the API:
 - **POST /api/users**
   - Adds a new user.
   - **Request Body**: JSON payload with user information.
+  ```json
+  {
+  "username": "newuser3",
+  "email": "newuser3@example.com",
+  "password": "password1232",
+  "user_level_id": 1
+  }
 
 
 - **PUT /api/users/:id**
   - Updates user information based on user ID.
   - **Request Body**: JSON payload with updated user details.
+  ```json
+  {
+  "username": "name",
+  "email": "name@example.com",
+  "password": "password",
+  "user_level_id": "2"
+  }
 
 
 - **DELETE /api/users/:id**
