@@ -118,12 +118,12 @@ To interact with the API:
 
 
 - **GET** `/api/ratings/media/:id`  
-  - Retrieves all ratings associated with a specific media item by its ID.
+  - Retrieves all ratings associated with a specific media item.
   - ie `/api/ratings/media/2`
 
 
 - **GET** `/api/ratings/user/:id`  
-  - Retrieves all ratings submitted by a specific user by their ID.
+  - Retrieves all ratings submitted by a specific user.
   -ie `/api/ratings/user/3`
 
 

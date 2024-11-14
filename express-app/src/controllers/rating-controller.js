@@ -5,6 +5,7 @@ import {
   fetchRatings,
   fetchRatingById,
   fetchRatingsByUserId,
+  fetchRatingsByMediaId,
   addRating,
   modifyRating,
   deleteRating,
@@ -67,6 +68,27 @@ const getRatingsByUserId = async (req, res) => {
     res.status(500).json({message: 'Error in getRatingsByUserId database query'});
   }
 };
+
+
+/**
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the JSON response.
+ */
+const getRatingsByMediaId = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const ratings = await fetchRatingsByMediaId(id);
+    if (ratings) {
+      res.json(ratings);
+    } else {
+      res.status(404).json({message: 'Ratings not found for media ID ' + id});
+    }
+  } catch (e) {
+    console.error('getRatingsByMediaId', e.message);
+    res.status(500).json({message: 'Error in getRatingsByMediaId database query'});
+  }
+}
 
 
 
@@ -151,5 +173,5 @@ const deleteRatingById = async (req, res) => {
   }
 };
 
-export {getRatings, getRatingById, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById};
+export {getRatings, getRatingById, getRatingsByMediaId, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById};
  

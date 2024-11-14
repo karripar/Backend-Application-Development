@@ -1,6 +1,6 @@
 import express from 'express';
 //import { getUserItemById, getUserItems, postUserItem, modifyUserItem, deleteUserItem } from './users.js';
-import { mediaDocs, userDocs } from './docs.js';
+import { mediaDocs, userDocs, ratingDocs } from './docs.js';
 import mediaRouter from './routes/mediaRouter.js';
 import userRouter from './routes/userRouter.js';
 import ratingRouter from './routes/ratingRouter.js';
@@ -47,6 +47,19 @@ app.get('/api/app/users', (req, res) => {
     res.render('index', {
         title: 'API Documentation for User endpoints',
         message: userDocs,
+    });
+});
+
+/**
+ * Route to render API documentation for rating endpoints.
+ * @function
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+app.get('/api/app/ratings', (req, res) => {
+    res.render('index', {
+        title: 'API Documentation for Rating endpoints',
+        message: ratingDocs,
     });
 });
 

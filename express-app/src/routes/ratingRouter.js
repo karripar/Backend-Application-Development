@@ -1,5 +1,5 @@
 import express from 'express';
-import { getRatings, getRatingById, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById } from '../controllers/rating-controller.js';
+import { getRatings, getRatingById, getRatingsByMediaId, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById } from '../controllers/rating-controller.js';
 
 const ratingRouter = express.Router();
 
@@ -25,6 +25,16 @@ ratingRouter
  */
 ratingRouter.route('/user/:id')
   .get(getRatingsByUserId);
+
+
+/**
+ * Route to get all ratings by a specific media.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the JSON response.
+ */
+ratingRouter.route('/media/:id')
+  .get(getRatingsByMediaId);
 
 
 

@@ -124,6 +124,12 @@ GET http://localhost:3000/api/ratings
 ### Get a rating based on ID
 GET http://localhost:3000/api/ratings/2
 
+### Get all ratings for a specific media item
+GET http://localhost:3000/api/ratings/media/3
+
+### Get all ratings for a specific user
+GET http://localhost:3000/api/ratings/user/3
+
 ### Test not found (invalid rating ID)
 GET http://localhost:3000/api/ratings/963
 
@@ -146,4 +152,4 @@ Content-Type: application/json
 }
 
 ### Delete a rating by ID
-DELETE http://localhost:3000/api/ratings/2
+DELETE http://localhost:3000/api/ratings/6

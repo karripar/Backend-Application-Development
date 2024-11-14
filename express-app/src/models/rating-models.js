@@ -26,28 +26,44 @@ const fetchRatingById = async (id) => {
   }
 };
 
-
 const fetchRatingsByUserId = async (id) => {
-    try {
-        const sql = 'SELECT * FROM ratings WHERE user_id = ?';
-        const [rows] = await promisePool.query(sql, [id]);
-        if (rows) {
-            return rows[0];
-        }
-    } catch (e) {
-        console.log('fetchRatingsByUserId', e.message);
-        throw new Error('Database error: ' + e.message);
+  try {
+    const sql = 'SELECT * FROM ratings WHERE user_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      console.log('fetchRatingsByUserId', rows);
+      return rows;
     }
+  } catch (e) {
+    console.log('fetchRatingsByUserId', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
 };
 
-
+const fetchRatingsByMediaId = async (id) => {
+  try {
+    const sql = 'SELECT * FROM ratings WHERE media_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      console.log('fetchRatingsByMediaId', rows);
+      return rows;
+    }
+  } catch (e) {
+    console.log('fetchRatingsByMediaId', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
 
 const addRating = async (newRating) => {
   const sql = `
         INSERT INTO ratings
         (rating_value, media_id, user_id)
         VALUES (?, ?, ?)`;
-  const params = [newRating.rating_value, newRating.media_id, newRating.user_id];
+  const params = [
+    newRating.rating_value,
+    newRating.media_id,
+    newRating.user_id,
+  ];
   try {
     const [result] = await promisePool.query(sql, params);
     if (result) {
@@ -59,12 +75,11 @@ const addRating = async (newRating) => {
       console.log('addRating', e.message);
       throw new Error('Duplicate entry, rating already exists');
     } else {
-    console.log('addRating', e.message);
-    throw new Error('Database error: ' + e.message);
+      console.log('addRating', e.message);
+      throw new Error('Database error: ' + e.message);
+    }
   }
-}
 };
-
 
 const modifyRating = async (id, modifiedRating) => {
   const sql = `
@@ -84,8 +99,6 @@ const modifyRating = async (id, modifiedRating) => {
   }
 };
 
-
-
 const deleteRating = async (id) => {
   const sql = 'DELETE FROM ratings WHERE rating_id = ?';
   try {
@@ -94,7 +107,7 @@ const deleteRating = async (id) => {
       console.log('deleteRating', 'Deleted rating with ID', id);
       return {success: true};
     } else {
-        console.log('deleteRating', `Rating with ID ${id} not found`);
+      console.log('deleteRating', `Rating with ID ${id} not found`);
       return {success: false, error: 'Rating not found'};
     }
   } catch (e) {
@@ -103,4 +116,12 @@ const deleteRating = async (id) => {
   }
 };
 
-export {fetchRatings, fetchRatingById, fetchRatingsByUserId, addRating, modifyRating, deleteRating};
+export {
+  fetchRatings,
+  fetchRatingById,
+  fetchRatingsByMediaId,
+  fetchRatingsByUserId,
+  addRating,
+  modifyRating,
+  deleteRating,
+};
