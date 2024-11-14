@@ -25,6 +25,7 @@ To interact with the API:
 
 2. Open the server location: 127.0.0.1:3000 or the documentation locations explained above for more detail.
 
+---
 
 ## API Endpoints
 
@@ -33,7 +34,7 @@ To interact with the API:
 - **GET /api/media**
   - Retrieves a list of all media items.
   
-  
+
 - **GET /api/media/:id**
   - Retrieves a single media item by its unique ID.
 
@@ -56,6 +57,8 @@ To interact with the API:
 - **PUT /api/media/:id**
   - Updates an existing media item by ID.
   - **Request Body**: JSON payload with updated media details.
+
+---
 
 ### User Endpoints
 
@@ -81,7 +84,7 @@ To interact with the API:
   - Deletes a user based on their ID.
   -ie. /api/users/305
 
-
+---
 
 ### Rating Endpoints
 
