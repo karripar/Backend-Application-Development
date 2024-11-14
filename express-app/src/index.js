@@ -3,6 +3,7 @@ import express from 'express';
 import { mediaDocs, userDocs } from './docs.js';
 import mediaRouter from './routes/mediaRouter.js';
 import userRouter from './routes/userRouter.js';
+import ratingRouter from './routes/ratingRouter.js';
 
 
 const hostname = '127.0.0.1';
@@ -54,6 +55,8 @@ app.get('/api/app/users', (req, res) => {
 app.use('/api/media', mediaRouter);
 
 app.use('/api/users', userRouter);
+
+app.use('/api/ratings', ratingRouter);
 
 // Start the server
 app.listen(port, hostname, () => {

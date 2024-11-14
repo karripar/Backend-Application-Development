@@ -4,7 +4,10 @@ import express from 'express';
 import { getItems, getItemById, postItem, modifyItem, deleteItem } from '../controllers/media-controller.js';
 import multer from 'multer';
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ 
+  dest: 'uploads/',
+  limits: {fileSize: 2 * 1024 * 1024},
+ });
 
 const mediaRouter = express.Router();
 

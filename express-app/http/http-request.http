@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Delete a media item based on id
-DELETE http://localhost:3000/api/media/7
+DELETE http://localhost:3000/api/media/8
 
 ### Create an item
 POST http://localhost:3000/api/media
@@ -46,10 +46,10 @@ Content-Disposition: form-data; name="user_id"
 
 1
 ------Boundary
-Content-Disposition: form-data; name="file"; filename="image.png"
+Content-Disposition: form-data; name="file"; filename="kissa2.png"
 Content-Type: image/png
 
-< ./media/cat2.png
+< ./media/kissa2.png
 ------Boundary--
 
 
@@ -110,3 +110,40 @@ Content-Type: application/json
 ### Delete a user by ID
 DELETE http://localhost:3000/api/users/10
 Content-Type: application/json
+
+
+
+
+
+
+## Ratings resource
+
+### Get all ratings
+GET http://localhost:3000/api/ratings
+
+### Get a rating based on ID
+GET http://localhost:3000/api/ratings/2
+
+### Test not found (invalid rating ID)
+GET http://localhost:3000/api/ratings/963
+
+### Create a new rating
+POST http://localhost:3000/api/ratings
+Content-Type: application/json
+
+{
+  "rating_value": 1,
+  "media_id": 3,
+  "user_id": 3
+}
+
+### Modify an existing rating by ID
+PUT http://localhost:3000/api/ratings/3
+Content-Type: application/json
+
+{
+  "rating_value": 5
+}
+
+### Delete a rating by ID
+DELETE http://localhost:3000/api/ratings/2

@@ -33,8 +33,10 @@ To interact with the API:
 - **GET /api/media**
   - Retrieves a list of all media items.
   
+  
 - **GET /api/media/:id**
   - Retrieves a single media item by its unique ID.
+
 
 - **POST /api/media**
   - Adds a new media item. 
@@ -50,6 +52,7 @@ To interact with the API:
     "created_at": "2023-10-16T19:00:09.000Z"
   }
 
+
 - **PUT /api/media/:id**
   - Updates an existing media item by ID.
   - **Request Body**: JSON payload with updated media details.
@@ -59,19 +62,72 @@ To interact with the API:
 - **GET /api/users**
   - Retrieves a list of all users.
 
+
 - **GET /api/users/:id**
   - Retrieves a single user by their ID.
+
 
 - **POST /api/users**
   - Adds a new user.
   - **Request Body**: JSON payload with user information.
 
+
 - **PUT /api/users/:id**
   - Updates user information based on user ID.
   - **Request Body**: JSON payload with updated user details.
 
+
 - **DELETE /api/users/:id**
   - Deletes a user based on their ID.
   -ie. /api/users/305
+
+
+
+### Rating Endpoints
+
+- **GET /api/ratings**  
+  - Retrieves a list of all ratings.
+
+
+- **GET /api/ratings/media/:id**  
+  - Retrieves all ratings associated with a specific media item by its ID.
+
+
+- **GET /api/ratings/user/:id**  
+  - Retrieves all ratings submitted by a specific user by their ID.
+
+
+- **POST /api/ratings**  
+  - Adds a new rating.
+  - **Request Body**: JSON payload with rating details.
+  ```json
+  {
+    "rating_value": 4,
+    "media_id": 1,
+    "user_id": 2
+  }
+
+
+- **DELETE /api/ratings/:id**  
+  - Deletes a rating by its unique ID.
+  - **Example Request**: `/api/ratings/10`
+  - **Response**: 
+    - `200 OK`: Rating deleted successfully.
+    - `404 Not Found`: Rating with specified ID does not exist.
+
+
+- **PUT /api/ratings/:id**  
+  - Updates an existing rating by its unique ID.
+  - **Request Body**: JSON payload with the updated rating value (between 1 and 5).
+  - **Example Request**:
+    ```json
+    {
+      "rating_value": 4
+    }
+    ```
+  - **Response**: 
+    - `200 OK`: Rating updated successfully.
+    - `400 Bad Request`: Invalid rating value or missing fields.
+    - `404 Not Found`: Rating with specified ID does not exist.
 
 

@@ -32,7 +32,7 @@ const postItem = async (req, res) => {
   console.log('post req file', req.file);
   // Add the new media item to the array
   const newMediaItem = {
-    user_id: 1,
+    user_id: req.body.user_id,
     title: req.body.title,
     description: req.body.description,
     filename: req.file.filename,
