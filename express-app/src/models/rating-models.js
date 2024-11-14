@@ -1,5 +1,11 @@
 import promisePool from '../utils/database.js';
 
+/**
+ *  
+ * @returns {Promise<Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchRatings = async () => {
   try {
     const [rows, structure] = await promisePool.query('SELECT * FROM ratings');
@@ -13,6 +19,14 @@ const fetchRatings = async () => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @returns {Promise<Object>} Promise object represents the rating object
+ * @throws {Error} Rating not found
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchRatingById = async (id) => {
   try {
     const sql = 'SELECT * FROM ratings WHERE rating_id = ?';
@@ -26,6 +40,13 @@ const fetchRatingById = async (id) => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - User ID
+ * @returns {Promise<Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchRatingsByUserId = async (id) => {
   try {
     const sql = 'SELECT * FROM ratings WHERE user_id = ?';
@@ -40,6 +61,14 @@ const fetchRatingsByUserId = async (id) => {
   }
 };
 
+
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise<Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchRatingsByMediaId = async (id) => {
   try {
     const sql = 'SELECT * FROM ratings WHERE media_id = ?';
@@ -54,6 +83,14 @@ const fetchRatingsByMediaId = async (id) => {
   }
 };
 
+/**
+ *  
+ * @param {Object} newRating - Rating object
+ * @returns {Promise<number>} Promise object represents the ID of the new rating
+ * @throws {Error} Duplicate entry, rating already exists
+ * @throws {Error} Database error
+ * @async
+ */
 const addRating = async (newRating) => {
   const sql = `
         INSERT INTO ratings
@@ -81,6 +118,14 @@ const addRating = async (newRating) => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @param {Object} modifiedRating - Rating object
+ * @returns {Promise<boolean>} Promise object represents the success of the operation
+ * @throws {Error} Database error
+ * @async
+ */
 const modifyRating = async (id, modifiedRating) => {
   const sql = `
         UPDATE ratings
@@ -99,6 +144,13 @@ const modifyRating = async (id, modifiedRating) => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @returns {Promise<boolean>} Promise object represents the success of the operation
+ * @throws {Error} Database error
+ * @async
+ */
 const deleteRating = async (id) => {
   const sql = 'DELETE FROM ratings WHERE rating_id = ?';
   try {

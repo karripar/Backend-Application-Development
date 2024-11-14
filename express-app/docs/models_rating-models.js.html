@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/rating-models.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/rating-models.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import promisePool from '../utils/database.js';
+
+/**
+ *  
+ * @returns {Promise&lt;Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchRatings = async () => {
+  try {
+    const [rows, structure] = await promisePool.query('SELECT * FROM ratings');
+    if (rows) {
+      console.log('fetchRatings', rows, structure);
+      return rows;
+    }
+  } catch (e) {
+    console.log('fetchRatings', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @returns {Promise&lt;Object>} Promise object represents the rating object
+ * @throws {Error} Rating not found
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchRatingById = async (id) => {
+  try {
+    const sql = 'SELECT * FROM ratings WHERE rating_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      return rows[0];
+    }
+  } catch (e) {
+    console.log('fetchRatingById', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {number} id - User ID
+ * @returns {Promise&lt;Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchRatingsByUserId = async (id) => {
+  try {
+    const sql = 'SELECT * FROM ratings WHERE user_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      console.log('fetchRatingsByUserId', rows);
+      return rows;
+    }
+  } catch (e) {
+    console.log('fetchRatingsByUserId', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise&lt;Array>} Promise object represents the array of ratings
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchRatingsByMediaId = async (id) => {
+  try {
+    const sql = 'SELECT * FROM ratings WHERE media_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      console.log('fetchRatingsByMediaId', rows);
+      return rows;
+    }
+  } catch (e) {
+    console.log('fetchRatingsByMediaId', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {Object} newRating - Rating object
+ * @returns {Promise&lt;number>} Promise object represents the ID of the new rating
+ * @throws {Error} Duplicate entry, rating already exists
+ * @throws {Error} Database error
+ * @async
+ */
+const addRating = async (newRating) => {
+  const sql = `
+        INSERT INTO ratings
+        (rating_value, media_id, user_id)
+        VALUES (?, ?, ?)`;
+  const params = [
+    newRating.rating_value,
+    newRating.media_id,
+    newRating.user_id,
+  ];
+  try {
+    const [result] = await promisePool.query(sql, params);
+    if (result) {
+      console.log('addRating', result);
+      return result.insertId;
+    }
+  } catch (e) {
+    if (e.code === 'ER_DUP_ENTRY') {
+      console.log('addRating', e.message);
+      throw new Error('Duplicate entry, rating already exists');
+    } else {
+      console.log('addRating', e.message);
+      throw new Error('Database error: ' + e.message);
+    }
+  }
+};
+
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @param {Object} modifiedRating - Rating object
+ * @returns {Promise&lt;boolean>} Promise object represents the success of the operation
+ * @throws {Error} Database error
+ * @async
+ */
+const modifyRating = async (id, modifiedRating) => {
+  const sql = `
+        UPDATE ratings
+        SET rating_value = ?
+        WHERE rating_id = ?`;
+  const params = [modifiedRating.rating_value, id];
+  try {
+    const [result] = await promisePool.query(sql, params);
+    if (result) {
+      console.log('modifyRating', result);
+      return result.affectedRows > 0;
+    }
+  } catch (e) {
+    console.log('modifyRating', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {number} id - Rating ID
+ * @returns {Promise&lt;boolean>} Promise object represents the success of the operation
+ * @throws {Error} Database error
+ * @async
+ */
+const deleteRating = async (id) => {
+  const sql = 'DELETE FROM ratings WHERE rating_id = ?';
+  try {
+    const [result] = await promisePool.query(sql, [id]);
+    if (result.affectedRows > 0) {
+      console.log('deleteRating', 'Deleted rating with ID', id);
+      return {success: true};
+    } else {
+      console.log('deleteRating', `Rating with ID ${id} not found`);
+      return {success: false, error: 'Rating not found'};
+    }
+  } catch (e) {
+    console.log('deleteRating', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+export {
+  fetchRatings,
+  fetchRatingById,
+  fetchRatingsByMediaId,
+  fetchRatingsByUserId,
+  addRating,
+  modifyRating,
+  deleteRating,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addMediaItem">addMediaItem</a></li><li><a href="global.html#addRating">addRating</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteItem">deleteItem</a></li><li><a href="global.html#deleteMediaItem">deleteMediaItem</a></li><li><a href="global.html#deleteRating">deleteRating</a></li><li><a href="global.html#deleteRatingById">deleteRatingById</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#deleteUserById">deleteUserById</a></li><li><a href="global.html#deleteUserItem">deleteUserItem</a></li><li><a href="global.html#fetchMediaItems">fetchMediaItems</a></li><li><a href="global.html#fetchMediaItemsById">fetchMediaItemsById</a></li><li><a href="global.html#fetchRatingById">fetchRatingById</a></li><li><a href="global.html#fetchRatings">fetchRatings</a></li><li><a href="global.html#fetchRatingsByMediaId">fetchRatingsByMediaId</a></li><li><a href="global.html#fetchRatingsByUserId">fetchRatingsByUserId</a></li><li><a href="global.html#fetchUserById">fetchUserById</a></li><li><a href="global.html#fetchUsers">fetchUsers</a></li><li><a href="global.html#getItemById">getItemById</a></li><li><a href="global.html#getItems">getItems</a></li><li><a href="global.html#getRatingById">getRatingById</a></li><li><a href="global.html#getRatings">getRatings</a></li><li><a href="global.html#getRatingsByMediaId">getRatingsByMediaId</a></li><li><a href="global.html#getRatingsByUserId">getRatingsByUserId</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserItemById">getUserItemById</a></li><li><a href="global.html#getUserItems">getUserItems</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modifyItem">modifyItem</a></li><li><a href="global.html#modifyMediaItem">modifyMediaItem</a></li><li><a href="global.html#modifyRating">modifyRating</a></li><li><a href="global.html#modifyRatingById">modifyRatingById</a></li><li><a href="global.html#modifyUser">modifyUser</a></li><li><a href="global.html#modifyUserById">modifyUserById</a></li><li><a href="global.html#modifyUserItem">modifyUserItem</a></li><li><a href="global.html#postItem">postItem</a></li><li><a href="global.html#postRating">postRating</a></li><li><a href="global.html#postUser">postUser</a></li><li><a href="global.html#postUserItem">postUserItem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Nov 14 2024 23:05:27 GMT+0200 (Eastern European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

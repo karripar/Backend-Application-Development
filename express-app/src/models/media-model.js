@@ -1,5 +1,11 @@
 import promisePool from '../utils/database.js';
 
+/**
+ *  
+ * @returns {Promise<Array>} Promise object represents the array of media items
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchMediaItems = async () => {
   try {
     const [rows, structure] = await promisePool.query(
@@ -15,6 +21,14 @@ const fetchMediaItems = async () => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise<Object>} Promise object represents the media item object
+ * @throws {Error} Media item not found
+ * @throws {Error} Database error
+ * @async
+ */
 const fetchMediaItemsById = async (id) => {
   try {
     const sql = 'SELECT * FROM mediaitems WHERE media_id = ?';
@@ -28,6 +42,13 @@ const fetchMediaItemsById = async (id) => {
   }
 };
 
+/**
+ *  
+ * @param {Object} newItem - Media item object
+ * @returns {Promise<number>} Promise object represents the ID of the new media item
+ * @throws {Error} Database error
+ * @async
+ */
 const addMediaItem = async (newItem) => {
   const sql = `
                   INSERT INTO mediaitems 
@@ -53,6 +74,14 @@ const addMediaItem = async (newItem) => {
   }
 };
 
+/**
+ *  
+ * @param {number} id - Media ID
+ * @param {Object} modifiedItem - Modified media item object
+ * @returns {Promise<number>} Promise object represents the number of affected rows
+ * @throws {Error} Database error
+ * @async
+ */
 const modifyMediaItem = async (id, modifiedItem) => {
   const sql = `
   UPDATE MediaItems
@@ -79,6 +108,13 @@ const modifyMediaItem = async (id, modifiedItem) => {
   }
 }
 
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise<Object>} Promise object represents the success of the deletion
+ * @throws {Error} Database error
+ * @async
+ */
 const deleteMediaItem = async (id) => {
   const sql = 'DELETE FROM mediaitems WHERE media_id = ?';
   try {

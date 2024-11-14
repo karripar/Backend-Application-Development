@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/media-model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/media-model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import promisePool from '../utils/database.js';
+
+/**
+ *  
+ * @returns {Promise&lt;Array>} Promise object represents the array of media items
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchMediaItems = async () => {
+  try {
+    const [rows, structure] = await promisePool.query(
+      'SELECT * FROM mediaitems',
+    );
+    if (rows) {
+      console.log('result', rows, structure);
+      return rows;
+    }
+  } catch (e) {
+    console.log('fetchMediaItems', e.message);
+    throw new Error('Database error' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise&lt;Object>} Promise object represents the media item object
+ * @throws {Error} Media item not found
+ * @throws {Error} Database error
+ * @async
+ */
+const fetchMediaItemsById = async (id) => {
+  try {
+    const sql = 'SELECT * FROM mediaitems WHERE media_id = ?';
+    const [rows] = await promisePool.query(sql, [id]);
+    if (rows) {
+      return rows[0];
+    }
+  } catch (e) {
+    console.log('fetchMediaItemsById', e.message);
+    throw new Error('Database error' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {Object} newItem - Media item object
+ * @returns {Promise&lt;number>} Promise object represents the ID of the new media item
+ * @throws {Error} Database error
+ * @async
+ */
+const addMediaItem = async (newItem) => {
+  const sql = `
+                  INSERT INTO mediaitems 
+                  (user_id, title, description, filename, filesize, media_type) 
+                  VALUES (?, ?, ?, ?, ?, ?)`;
+  const params = [
+    newItem.user_id,
+    newItem.title,
+    newItem.description,
+    newItem.filename,
+    newItem.filesize,
+    newItem.media_type,
+  ];
+  try {
+    const [result] = await promisePool.query(sql, params);
+    if (result) {
+      console.log('addMediaItem', result);
+      return result.insertId;
+    }
+  } catch (e) {
+    console.log('addMediaItem', e.message);
+    throw new Error('Database error' + e.message);
+  }
+};
+
+/**
+ *  
+ * @param {number} id - Media ID
+ * @param {Object} modifiedItem - Modified media item object
+ * @returns {Promise&lt;number>} Promise object represents the number of affected rows
+ * @throws {Error} Database error
+ * @async
+ */
+const modifyMediaItem = async (id, modifiedItem) => {
+  const sql = `
+  UPDATE MediaItems
+  SET title = ?, description = ?, filename = ?, filesize = ?, media_type = ?
+  WHERE media_id = ?`;
+  const params = [
+    modifiedItem.title, 
+    modifiedItem.description,
+    modifiedItem.filename,
+    modifiedItem.filesize,
+    modifiedItem.media_type,
+    id
+  ]
+
+  try {
+    const [result] = await promisePool.query(sql, params);
+    if (result) {
+      console.log('modifyMediaItem', result);
+      return result.affectedRows;
+    }
+  } catch (e) {
+    console.log('modifyMediaItem', e.message);
+    throw new Error('Database error' + e.message);
+  }
+}
+
+/**
+ *  
+ * @param {number} id - Media ID
+ * @returns {Promise&lt;Object>} Promise object represents the success of the deletion
+ * @throws {Error} Database error
+ * @async
+ */
+const deleteMediaItem = async (id) => {
+  const sql = 'DELETE FROM mediaitems WHERE media_id = ?';
+  try {
+    const [result] = await promisePool.query(sql, [id]);
+    if (result.affectedRows > 0) {
+      console.log('deleteMediaItem', `Deleted media item with ID ${id}`);
+      return {success: true};
+    } else {
+      return {success: false, error: 'Media item not found'};
+    }
+  } catch (e) {
+    console.log('deleteMediaItem', e.message);
+    return {success: false, error : 'Database error' + e.message};
+  }
+}
+
+
+
+export {fetchMediaItems, addMediaItem, fetchMediaItemsById, modifyMediaItem, deleteMediaItem};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addMediaItem">addMediaItem</a></li><li><a href="global.html#addRating">addRating</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteItem">deleteItem</a></li><li><a href="global.html#deleteMediaItem">deleteMediaItem</a></li><li><a href="global.html#deleteRating">deleteRating</a></li><li><a href="global.html#deleteRatingById">deleteRatingById</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#deleteUserById">deleteUserById</a></li><li><a href="global.html#deleteUserItem">deleteUserItem</a></li><li><a href="global.html#fetchMediaItems">fetchMediaItems</a></li><li><a href="global.html#fetchMediaItemsById">fetchMediaItemsById</a></li><li><a href="global.html#fetchRatingById">fetchRatingById</a></li><li><a href="global.html#fetchRatings">fetchRatings</a></li><li><a href="global.html#fetchRatingsByMediaId">fetchRatingsByMediaId</a></li><li><a href="global.html#fetchRatingsByUserId">fetchRatingsByUserId</a></li><li><a href="global.html#fetchUserById">fetchUserById</a></li><li><a href="global.html#fetchUsers">fetchUsers</a></li><li><a href="global.html#getItemById">getItemById</a></li><li><a href="global.html#getItems">getItems</a></li><li><a href="global.html#getRatingById">getRatingById</a></li><li><a href="global.html#getRatings">getRatings</a></li><li><a href="global.html#getRatingsByMediaId">getRatingsByMediaId</a></li><li><a href="global.html#getRatingsByUserId">getRatingsByUserId</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUserItemById">getUserItemById</a></li><li><a href="global.html#getUserItems">getUserItems</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modifyItem">modifyItem</a></li><li><a href="global.html#modifyMediaItem">modifyMediaItem</a></li><li><a href="global.html#modifyRating">modifyRating</a></li><li><a href="global.html#modifyRatingById">modifyRatingById</a></li><li><a href="global.html#modifyUser">modifyUser</a></li><li><a href="global.html#modifyUserById">modifyUserById</a></li><li><a href="global.html#modifyUserItem">modifyUserItem</a></li><li><a href="global.html#postItem">postItem</a></li><li><a href="global.html#postRating">postRating</a></li><li><a href="global.html#postUser">postUser</a></li><li><a href="global.html#postUserItem">postUserItem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Nov 14 2024 23:05:27 GMT+0200 (Eastern European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

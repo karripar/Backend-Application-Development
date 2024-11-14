@@ -4,6 +4,8 @@ import { mediaDocs, userDocs, ratingDocs } from './docs.js';
 import mediaRouter from './routes/mediaRouter.js';
 import userRouter from './routes/userRouter.js';
 import ratingRouter from './routes/ratingRouter.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
 const hostname = '127.0.0.1';
@@ -23,6 +25,18 @@ app.use('/uploads', express.static('uploads'));
 
 // Serve user-related media files
 app.use('/media', express.static('media'));
+
+// Serve documentation for the API
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use('/docs', express.static('docs')); // Specifically for 'docs' directory
+
+app.get('/readme', (req, res) => {
+    res.sendFile(path.join(__dirname, '..','readme.md'));
+});
+
+app.use(express.static(__dirname));
 
 /**
  * Route to render API documentation for media endpoints.

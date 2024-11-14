@@ -6,16 +6,17 @@ This project provides a RESTful API with endpoints for managing user data and me
 
 You can access the API documentation rendered with Pug templates at the following URLs when the server is running. 
 
-- [Media API Documentation](http://localhost:3000/api/app/media): Detailed documentation for the media endpoints.
-- [User API Documentation](http://localhost:3000/api/app/users): Detailed documentation for the user endpoints.
+- [Media API Documentation](http://localhost:3000/api/app/media): Brief documentation for the media endpoints.
+- [User API Documentation](http://localhost:3000/api/app/users): Brief documentation for the user endpoints.
+- [Ratings API Documentation](http://localhost:3000/api/app/ratings): Brief documentation for the ratings endpoints.
 
 ## Usage Instructions
 
 To interact with the API:
 
 ### MySQL-Connection
-1. Clone
-2. Run `npm install`
+1. Clone the repository
+2. Run `npm install` in your preferred terminal.
 3. Create the database with the source file: `media-db.sql` in the db directory.
 4. Create an .env-file, see (`.env.sample`)
 

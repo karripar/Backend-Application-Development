@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: users.js</title>
+    <title>JSDoc: Source: controllers/media-controller.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: users.js</h1>
+    <h1 class="page-title">Source: controllers/media-controller.js</h1>
 
     
 
@@ -26,130 +26,143 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// Dummy mock data for users
-const userItems = [
-  {
-    user_id: 260,
-    username: 'Clarkson',
-    password: '********',
-    email: 'vchar@example.com',
-    user_level_id: 1,
-    created_at: '2020-09-12T06:56:41.000Z',
-    file_name: 'clarkson.png',
-    file_type: 'image/jpeg',
-  },
-  {
-    user_id: 305,
-    username: 'May',
-    password: '********',
-    email: 'dona@example.com',
-    user_level_id: 1,
-    created_at: '2021-12-11T06:00:41.000Z',
-    file_name: 'may.png',
-    file_type: 'image/jpeg',
-  },
-  {
-    user_id: 3609,
-    username: 'Hammond',
-    password: '********',
-    email: 'x58df@example.com',
-    user_level_id: 3,
-    created_at: '2023-04-02T05:56:41.000Z',
-    file_name: 'hammond.png',
-    file_type: 'image/jpeg',
-  },
-];
-
+            <pre class="prettyprint source linenums"><code>import {
+  fetchMediaItems,
+  addMediaItem,
+  fetchMediaItemsById,
+  deleteMediaItem,
+  modifyMediaItem,
+} from '../models/media-model.js';
 /**
- * Retrieves all user items and sends them as a JSON response.
+ * Retrieves all media items from the database and sends them as a JSON response.
  * @function
- * @param {Object} req - The request object used to receive HTTP request details.
  * @param {Object} res - The response object used to send the JSON response.
  */
-const getUserItems = (req, res) => {
-  res.json(userItems);
-};
-
-/**
- * Adds a new user item to the userItems array.
- * Logs the request body and assigns a new user ID to the item.
- * Sends a response with the newly created user item's ID.
- * @function
- * @param {Object} req - The request object containing the new user data in the body.
- * @param {Object} res - The response object used to send the response.
- */
-const postUserItem = (req, res) => {
-  console.log('post req body', req.body);
-  const newItem = req.body;
-  newItem.user_id = userItems[userItems.length - 1].user_id + 1; // Assign new user ID
-  userItems.push(newItem); // Add the new user item to the array
-  res.status(201).json({ message: 'Item added', id: newItem.user_id });
-};
-
-/**
- * Retrieves a user item by its user ID.
- * If the item is found, it sends the item as a JSON response.
- * If a 'plain' format is requested, it sends the user's username.
- * If the item is not found, it sends a 404 error response.
- * @function
- * @param {Object} req - The request object containing the user ID in the URL parameters.
- * @param {Object} res - The response object used to send the response.
- */
-const getUserItemById = (req, res) => {
-  const id = parseInt(req.params.id); // Parse user ID from URL parameter
-  const item = userItems.find((item) => item.user_id === id); // Find the user item by ID
-  if (item) {
-    if (req.query.format === 'plain') {
-      res.send(item.username); // Send username if 'plain' format is requested
-    } else {
-      res.json(item); // Send user item as JSON
-    }
-  } else {
-    res.status(404).json({ message: 'User not found' }); // User not found response
+const getItems = async (req, res) => {
+  try {
+    res.json(await fetchMediaItems());
+  } catch (e) {
+    console.error('getItems', e.message);
+    res.status(500).json({message: 'Error in getItems'});
   }
 };
 
 /**
- * Modifies an existing user item by its user ID.
+ * Adds a new media item to the mediaItems array.
+ * Logs the request body and assigns a new media ID to the item.
+ * Sends a response with the newly created media item's ID.
+ * @function
+ * @param {Object} req - The request object containing the new media data in the body.
+ * @param {Object} res - The response object used to send the response.
+ */
+const postItem = async (req, res) => {
+  console.log('post req body', req.body);
+  console.log('post req file', req.file);
+  // Add the new media item to the array
+  const newMediaItem = {
+    user_id: req.body.user_id,
+    title: req.body.title,
+    description: req.body.description,
+    filename: req.file.filename,
+    filesize: req.file.size,
+    media_type: req.file.mimetype,
+    created_at: new Date().toISOString(),
+  };
+  try {
+    const newId = await addMediaItem(newMediaItem);
+    if (newId) {
+      res.status(201).json({message: 'Item added', ...newId});
+    } else {
+      res.status(400).json({message: 'Item not added: failure'});
+    }
+  } catch (e) {
+    console.error('postItem', e.message);
+    res.status(500).json({message: 'Error in postItem database query'});
+  }
+};
+
+/**
+ * Retrieves a media item by its media ID.
+ * If the item is found, it sends the item as a JSON response.
+ * If a 'plain' format is requested, it sends just the item title.
+ * If the item is not found, it sends a 404 error response.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the response.
+ */
+const getItemById = async (req, res) => {
+  // TODO: Implement the try-catch block for db errors
+  try {
+    const id = parseInt(req.params.id); // Parse media ID from URL parameter
+    const item = await fetchMediaItemsById(id);
+    if (item) {
+      res.json(item);
+    } else {
+      res.status(404).json({message: 'Item not found'});
+    }
+  } catch (e) {
+    console.error('getItemById', e.message);
+    res.status(500).json({message: 'Error in getItemById database query'});
+  }
+};
+
+/**
+ * Deletes a media item by its media ID.
+ * If the item is found, it removes it from the mediaItems array and sends a 204 No Content response.
+ * If the item is not found, it sends a 404 error response.
+ * @function
+ * @param {Object} req - The request object containing the media ID in the URL parameters.
+ * @param {Object} res - The response object used to send the response.
+ */
+const deleteItem = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const result = await deleteMediaItem(id);
+    if (result.success) {
+      res.status(200).json({message: 'Item deleted', id: id});
+    } else if (result.error === 'Item not found') {
+      res.status(404).json({message: 'Item not found'});
+    } else {
+      res.status(500).json({message: result.error});
+    }
+  } catch (e) {
+    console.error('deleteItem', e.message);
+    res.status(500).json({message: 'Error in deleteItem database query'});
+  }
+};
+
+/**
+ * Modifies an existing media item by its media ID.
  * If the item is found, it updates its data with the request body and sends a response indicating success.
  * If the item is not found, it sends a 404 error response.
  * @function
- * @param {Object} req - The request object containing the user ID in the URL parameters and updated data in the body.
+ * @param {Object} req - The request object containing the media ID in the URL parameters and updated data in the body.
  * @param {Object} res - The response object used to send the response.
  */
-const modifyUserItem = (req, res) => {
-  const id = parseInt(req.params.id); // Parse user ID from URL parameter
-  const item = userItems.find((item) => item.user_id === id); // Find the user item by ID
-  if (item) {
-    const index = userItems.indexOf(item); // Get the index of the user item
-    userItems[index] = req.body; // Update the user item data
-    res.json({ message: 'Item updated', id: id }); // Send success response
+const modifyItem = async (req, res) => {
+  try {
+  const id = parseInt(req.params.id);
+  const modifiedItem = {
+    title: req.body.title,
+    description: req.body.description,
+    filename: req.body.filename,
+    filesize: req.body.filesize,
+    media_type: req.body.media_type,
+  };
+  const result = await modifyMediaItem(id, modifiedItem);
+  if (result) {
+    res.status(200).json({message: 'Item modified', id: id});
   } else {
-    res.status(404).json({ message: 'User not found' }); // User not found response
+    res.status(404).json({message: 'Item not found'});
   }
+} catch (e) {
+  console.error('modifyItem', e.message);
+  res.status(500).json({message: 'Error in modifyItem database query'});
+}
+
 };
 
-/**
- * Deletes a user item by its user ID.
- * If the item is found, it removes it from the userItems array and sends a success response.
- * If the item is not found, it sends a 404 error response.
- * @function
- * @param {Object} req - The request object containing the user ID in the URL parameters.
- * @param {Object} res - The response object used to send the response.
- */
-const deleteUserItem = (req, res) => {
-  const id = parseInt(req.params.id); // Parse user ID from URL parameter
-  const item = userItems.find((item) => item.user_id === id); // Find the user item by ID
-  if (item) {
-    const index = userItems.indexOf(item); // Get the index of the user item
-    userItems.splice(index, 1); // Remove the user item from the array
-    res.json({ message: 'Item deleted', id: id }); // Send success response
-  } else {
-    res.status(404).json({ message: 'User not found' }); // User not found response
-  }
-};
-
-export { getUserItems, postUserItem, getUserItemById, userItems, modifyUserItem, deleteUserItem };
+export {getItems, postItem, getItemById, deleteItem, modifyItem};
 </code></pre>
         </article>
     </section>
