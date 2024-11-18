@@ -14,13 +14,13 @@ GET http://localhost:3000/api/media/2
 GET http://localhost:3000/api/media/963
 
 ### Modify a media item based on id
-PUT http://localhost:3000/api/media/3
+PUT http://localhost:3000/api/media/1
 Content-Type: application/json
 
 {
   "title": "Uusi kissakuva",
   "description": "Uutta tietoa kissasta.",
-  "user_id": 3,
+  "user_id": 1,
   "filename": "kissakuva.png",
   "filesize": 123456,
   "media_type": "image/png"
@@ -31,6 +31,7 @@ DELETE http://localhost:3000/api/media/8
 
 ### Create an item
 POST http://localhost:3000/api/media
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkpvaG5Eb2UiLCJwYXNzd29yZCI6InRvLWJlLWhhc2hlZC1wdzEiLCJlbWFpbCI6ImpvaG5kb2VAZXhhbXBsZS5jb20iLCJ1c2VyX2xldmVsX2lkIjoyLCJjcmVhdGVkX2F0IjoiMjAyNC0xMS0xM1QxMToxNzoxOC4wMDBaIiwiaWF0IjoxNzMxOTE5ODE4LCJleHAiOjE3MzIwMDYyMTh9.Ys5btjN6XoN5O32EiN7tL2cT4Yq8K-1WiHRdxpkJY9o
 Content-Type: multipart/form-data; boundary=----Boundary
 
 ------Boundary
@@ -153,3 +154,19 @@ Content-Type: application/json
 
 ### Delete a rating by ID
 DELETE http://localhost:3000/api/ratings/6
+
+
+## Login resource
+
+### Login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "JohnDoe",
+  "password": "to-be-hashed-pw1"
+}
+
+### Get my user info
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw

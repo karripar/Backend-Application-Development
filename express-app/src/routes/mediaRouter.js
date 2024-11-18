@@ -3,6 +3,7 @@
 import express from 'express';
 import { getItems, getItemById, postItem, modifyItem, deleteItem } from '../controllers/media-controller.js';
 import multer from 'multer';
+import { authenticateToken } from '../middlewares/authentication.js';
 
 const upload = multer({ 
   dest: 'uploads/',
@@ -22,13 +23,13 @@ const mediaRouter = express.Router();
 mediaRouter
   .route('/')
   .get(getItems)
-  .post(upload.single('file'), postItem)
+  .post(authenticateToken, upload.single('file'), postItem)
 ;
 
 mediaRouter.route('/:id')
   .get(getItemById)
-  .put(modifyItem)
-  .delete(deleteItem);
+  .put(authenticateToken, modifyItem)
+  .delete(authenticateToken, deleteItem);
 
 
 export default mediaRouter;

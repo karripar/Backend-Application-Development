@@ -1,5 +1,6 @@
 import express from 'express';
 import { getRatings, getRatingById, getRatingsByMediaId, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById } from '../controllers/rating-controller.js';
+import { authenticateToken } from '../middlewares/authentication.js';
 
 const ratingRouter = express.Router();
 
@@ -46,8 +47,8 @@ ratingRouter.route('/media/:id')
  */
 ratingRouter.route('/:id')
   .get(getRatingById)
-  .put(modifyRatingById)
-  .delete(deleteRatingById);
+  .put(authenticateToken, modifyRatingById)
+  .delete(authenticateToken, deleteRatingById);
 
 export default ratingRouter;
 

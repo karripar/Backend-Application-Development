@@ -28,8 +28,9 @@ const fetchUsers = async () => {
  * @throws {Error} Database error
  */
 const fetchUserById = async (id) => {
+  
   try {
-    const sql = 'SELECT * FROM users WHERE user_id = ?';
+    const sql = 'SELECT username, email, user_level_id FROM users WHERE user_id = ?';
     const [rows] = await promisePool.query(sql, [id]);
     if (rows) {
       return rows[0];
@@ -135,4 +136,21 @@ const deleteUser = async (id) => {
 };
 
 
-export { fetchUsers, fetchUserById, addUser, modifyUser, deleteUser };
+const selectUsernameAndPassword = async (username, password) => {
+  // TODO return only user_id
+  const sql = 'SELECT user_id, username, email, created_at FROM users WHERE username = ? AND password = ?';
+  try {
+    const [rows] = await promisePool.query(sql, [username, password]);
+    if (rows) {
+      return rows[0];
+    } else {
+      throw new Error('selectUsernameAndPassword, User not found');
+    }
+  } catch (e) {
+    console.log('selectUsernameAndPassword', e.message);
+    throw new Error('Database error: ' + e.message);
+  }
+};
+
+
+export { fetchUsers, fetchUserById, addUser, modifyUser, deleteUser, selectUsernameAndPassword };

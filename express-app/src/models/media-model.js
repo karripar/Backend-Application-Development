@@ -82,18 +82,19 @@ const addMediaItem = async (newItem) => {
  * @throws {Error} Database error
  * @async
  */
-const modifyMediaItem = async (id, modifiedItem) => {
+const modifyMediaItem = async (media_id, user_id, modifiedItem) => {
   const sql = `
   UPDATE MediaItems
   SET title = ?, description = ?, filename = ?, filesize = ?, media_type = ?
-  WHERE media_id = ?`;
+  WHERE media_id = ? AND user_id = ?`;
   const params = [
     modifiedItem.title, 
     modifiedItem.description,
     modifiedItem.filename,
     modifiedItem.filesize,
     modifiedItem.media_type,
-    id
+    media_id,
+    user_id
   ]
 
   try {

@@ -32,7 +32,7 @@ const postItem = async (req, res) => {
   console.log('post req file', req.file);
   // Add the new media item to the array
   const newMediaItem = {
-    user_id: req.body.user_id,
+    user_id: req.user.user_id,
     title: req.body.title,
     description: req.body.description,
     filename: req.file.filename,
@@ -89,20 +89,23 @@ const getItemById = async (req, res) => {
 const deleteItem = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const result = await deleteMediaItem(id);
-    if (result.success) {
-      res.status(200).json({message: 'Item deleted', id: id});
-    } else if (result.error === 'Item not found') {
-      res.status(404).json({message: 'Item not found'});
+    const item = await fetchMediaItemsById(id);
+
+    if (item && item.user_id === req.user.user_id) {
+      const result = await deleteMediaItem(id);
+      if (result.success) {
+        res.status(200).json({ message: 'Item deleted', id });
+      } else {
+        res.status(404).json({ message: 'Item not found' });
+      }
     } else {
-      res.status(500).json({message: result.error});
+      res.status(403).json({ message: 'You can only delete your own media items' });
     }
   } catch (e) {
     console.error('deleteItem', e.message);
-    res.status(500).json({message: 'Error in deleteItem database query'});
+    res.status(500).json({ message: 'Error in deleteItem database query' });
   }
 };
-
 /**
  * Modifies an existing media item by its media ID.
  * If the item is found, it updates its data with the request body and sends a response indicating success.
@@ -112,26 +115,28 @@ const deleteItem = async (req, res) => {
  * @param {Object} res - The response object used to send the response.
  */
 const modifyItem = async (req, res) => {
-  try {
-  const id = parseInt(req.params.id);
-  const modifiedItem = {
-    title: req.body.title,
-    description: req.body.description,
-    filename: req.body.filename,
-    filesize: req.body.filesize,
-    media_type: req.body.media_type,
-  };
-  const result = await modifyMediaItem(id, modifiedItem);
-  if (result) {
-    res.status(200).json({message: 'Item modified', id: id});
-  } else {
-    res.status(404).json({message: 'Item not found'});
-  }
-} catch (e) {
-  console.error('modifyItem', e.message);
-  res.status(500).json({message: 'Error in modifyItem database query'});
-}
+  const { title, description } = req.body;
+  console.log('put req body', req.body);
 
+  const newDetails = { title, description };
+
+  try {
+    const item = await fetchMediaItemsById(req.params.id);
+
+    if (item && item.user_id === req.user.user_id) {
+      const itemsEdited = await modifyMediaItem(req.params.id, req.user.user_id, newDetails);
+      if (itemsEdited === 0) {
+        res.status(404).json({ message: 'Media Item not found or no permission to edit' });
+      } else {
+        res.status(200).json({ message: 'Item updated', id: req.params.id });
+      }
+    } else {
+      res.status(403).json({ message: 'You can only modify your own media items' });
+    }
+  } catch (e) {
+    console.error('modifyItem', e.message);
+    res.status(500).json({ message: 'Error in modifyItem database query' });
+  }
 };
 
 export {getItems, postItem, getItemById, deleteItem, modifyItem};

@@ -2,6 +2,7 @@
 
 import express from 'express';
 import { getUsers, getUserById, postUser, modifyUserById, deleteUserById } from '../controllers/user-controller.js';
+import { authenticateToken } from '../middlewares/authentication.js';
 
 const userRouter = express.Router();
 
@@ -26,8 +27,8 @@ userRouter
  */
 userRouter.route('/:id')
   .get(getUserById)
-  .put(modifyUserById)
-  .delete(deleteUserById);
+  .put(authenticateToken, modifyUserById)
+  .delete(authenticateToken, deleteUserById);
 
 
 export default userRouter;

@@ -6,6 +6,7 @@ import userRouter from './routes/userRouter.js';
 import ratingRouter from './routes/ratingRouter.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRouter from './routes/auth-router.js';
 
 
 const hostname = '127.0.0.1';
@@ -84,6 +85,8 @@ app.use('/api/media', mediaRouter);
 app.use('/api/users', userRouter);
 
 app.use('/api/ratings', ratingRouter);
+
+app.use('/api/auth', authRouter);
 
 // Start the server
 app.listen(port, hostname, () => {
