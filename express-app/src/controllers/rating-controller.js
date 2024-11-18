@@ -141,24 +141,34 @@ const postRating = async (req, res) => {
  * @function
  * @param {Object} req - The request object containing the rating ID in the URL parameters and the modified rating data in the request body.
  * @param {Object} res - The response object used to send the JSON response.
+ * @returns {Object} - A JSON response indicating whether the rating was modified successfully.
+ * @throws {Object} - A JSON response indicating that the rating was not found.
+ * @throws {Object} - A JSON response indicating that the user can only modify their own ratings.
+ * @throws {Object} - A JSON response indicating an error in the database query.
  */
-const modifyRatingById = async (req, res) => {
+const modifyRatingById = async(req, res) => {
+  const id = parseInt(req.params.id);
+  const modifiedRating = {
+    rating_value: req.body.rating_value,
+  };
+
   try {
-    const id = parseInt(req.params.id);
-    const modifiedRating = {
-      rating_value: req.body.rating_value,
-    };
-    const result = await modifyRating(id, modifiedRating);
-    if (result) {
-      res.json({message: 'Rating modified', id: id});
+    const item = await fetchRatingById(id);
+    if (item && item.user_id === req.user.user_id) {
+      const result = await modifyRating(id, modifiedRating);
+      if (result) {
+        res.status(200).json({ message: 'Rating modified', id });
+      } else {
+        res.status(404).json({ message: 'Rating not found' });
+      }
     } else {
-      res.status(404).json({message: 'Rating not found'});
+      res.status(403).json({ message: 'You can only modify your own ratings.' });
     }
   } catch (e) {
     console.error('modifyRatingById', e.message);
-    res.status(500).json({message: 'Error in modifyRatingById database query'});
+    res.status(500).json({ message: 'Error in modifyRatingById database query' });
   }
-};
+}
 
 
 /**
@@ -170,19 +180,24 @@ const modifyRatingById = async (req, res) => {
 const deleteRatingById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const result = await deleteRating(id);
-    if (result.success) {
-      res.status(200).json({message: `Rating with ID ${id} was deleted.`});
-    } else if (result.error === 'Rating not found') {
-      res.status(404).json({message: `Rating with ID ${id} not found.`});
+    const item = fetchRatingById(id);
+    if (item && item.user_id === req.user.user_id) {
+      const result = await deleteRating(id);
+      if (result.success) {
+        res.status(204).json({ message: 'Rating deleted', id });
+      } else if (result.error === 'Rating not found') {
+        res.status(404).json({ message: 'Rating not found' });
+      } else {
+        res.status(500).json({ message: result.error });
+    }
     } else {
-      res.status(500).json({message: result.error});
+      res.status(403).json({ message: 'You can only delete your own ratings' });
     }
   } catch (e) {
     console.error('deleteRatingById', e.message);
-    res.status(500).json({message: 'Error in deleteRatingById database query'});
-  }
-};
+    res.status(500).json({ message: 'Error in deleteRatingById database query' });
+}
+}
 
 
 export {getRatings, getRatingById, getRatingsByMediaId, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById};

@@ -27,7 +27,8 @@ Content-Type: application/json
 }
 
 ### Delete a media item based on id
-DELETE http://localhost:3000/api/media/8
+DELETE http://localhost:3000/api/media/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw
 
 ### Create an item
 POST http://localhost:3000/api/media

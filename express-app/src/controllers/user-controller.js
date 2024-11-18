@@ -86,49 +86,64 @@ const getUserById = async (req, res) => {
 const deleteUserById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const result = await deleteUser(id);
+    const item = await fetchUserById(id);
 
-    if (result.success) {
-      res.status(200).json({ message: `User with ID ${id} was deleted.` });
-    } else if (result.error === 'User not found') {
-      res.status(404).json({ message: `User with ID ${id} not found.` });
+    if (item && item.user_id === req.user.user_id) {
+      const result = await deleteUser(id);
+      if (result.success) {
+        res.status(200).json({ message: `User with ID ${id} was deleted.` });
+      } else if (result.error === 'User not found') {
+        res.status(404).json({ message: `User with ID ${id} not found.` });
+      } else {
+        res.status(500).json({ message: result.error });
+      }
     } else {
-      res.status(500).json({ message: result.error });
+      res.status(403).json({ message: 'You can only delete your own user' });
     }
   } catch (e) {
     console.error('deleteUserById', e.message);
     res.status(500).json({ message: 'Error in deleteUserById database query' });
   }
-};
+}
 
 
 /**
  * Modifies an existing user by their ID.
  * If the user is found, it updates their data and sends a response indicating success.
  * If the user is not found, it sends a 404 error response.
+ * If the user is not the user making the request, it sends a 403 error response.
  * @function
  * @param {Object} req - The request object containing the user ID in the URL parameters and updated data in the body.
  * @param {Object} res - The response object used to send the response.
+ * @returns {Object} - A JSON response indicating whether the user was modified successfully.
+ * @throws {Object} - A JSON response indicating that the user was not found.
+ * @throws {Object} - A JSON response indicating that the user can only modify their own user.
  */
 const modifyUserById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const modifiedUser = {
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    user_level_id: req.body.user_level_id,
+  };
+
   try {
-    const id = parseInt(req.params.id);
-    const modifiedUser = {
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      user_level_id: req.body.user_level_id,
-    };
-    const result = await modifyUser(id, modifiedUser);
-    if (result) {
-      res.status(200).json({message: 'User modified', id: id});
+    const item = await fetchUserById(id);
+    if (item && item.user_id === req.user.user_id) {
+      const result = await modifyUser(id, modifiedUser);
+      if (result) {
+        res.status(200).json({ message: 'User modified', id });
+      } else {
+        res.status(404).json({ message: 'User not found' });
+      }
     } else {
-      res.status(404).json({message: 'User not found'});
+      res.status(403).json({ message: 'You can only modify your own user.' });
     }
   } catch (e) {
     console.error('modifyUserById', e.message);
-    res.status(500).json({message: 'Error in modifyUserById database query'});
+    res.status(500).json({ message: 'Error in modifyUserById database query' });
   }
-};
+}
 
 export {getUsers, postUser, getUserById, deleteUserById, modifyUserById};

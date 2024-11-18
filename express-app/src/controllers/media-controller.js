@@ -58,6 +58,7 @@ const postItem = async (req, res) => {
  * If the item is found, it sends the item as a JSON response.
  * If a 'plain' format is requested, it sends just the item title.
  * If the item is not found, it sends a 404 error response.
+ *
  * @function
  * @param {Object} req - The request object containing the media ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
@@ -82,6 +83,7 @@ const getItemById = async (req, res) => {
  * Deletes a media item by its media ID.
  * If the item is found, it removes it from the mediaItems array and sends a 204 No Content response.
  * If the item is not found, it sends a 404 error response.
+ * If the user is not the owner of the item, it sends a 403 error response.
  * @function
  * @param {Object} req - The request object containing the media ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
@@ -95,8 +97,8 @@ const deleteItem = async (req, res) => {
       const result = await deleteMediaItem(id);
       if (result.success) {
         res.status(200).json({ message: 'Item deleted', id });
-      } else {
-        res.status(404).json({ message: 'Item not found' });
+      } else if (result.error === 'Media item not found') {
+        res.status(404).json({ message: 'Media item not found' });
       }
     } else {
       res.status(403).json({ message: 'You can only delete your own media items' });
@@ -110,9 +112,13 @@ const deleteItem = async (req, res) => {
  * Modifies an existing media item by its media ID.
  * If the item is found, it updates its data with the request body and sends a response indicating success.
  * If the item is not found, it sends a 404 error response.
+ * If the user is not the owner of the item, it sends a 403 error response.
  * @function
  * @param {Object} req - The request object containing the media ID in the URL parameters and updated data in the body.
  * @param {Object} res - The response object used to send the response.
+ * @returns {Object} - A JSON response indicating whether the media item was modified successfully.
+ * @throws {Object} - A JSON response indicating that the media item was not found.
+ * @throws {Object} - A JSON response indicating that the user can only modify their own media items.
  */
 const modifyItem = async (req, res) => {
   const { title, description } = req.body;
