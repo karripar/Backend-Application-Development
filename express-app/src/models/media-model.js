@@ -82,32 +82,71 @@ const addMediaItem = async (newItem) => {
  * @throws {Error} Database error
  * @async
  */
-const modifyMediaItem = async (media_id, user_id, modifiedItem) => {
-  const sql = `
-  UPDATE MediaItems
-  SET title = ?, description = ?, filename = ?, filesize = ?, media_type = ?
-  WHERE media_id = ? AND user_id = ?`;
-  const params = [
-    modifiedItem.title, 
-    modifiedItem.description,
-    modifiedItem.filename,
-    modifiedItem.filesize,
-    modifiedItem.media_type,
-    media_id,
-    user_id
-  ]
+const modifyMediaItem = async (media_id, user_id, user_level_id, modifiedItem) => {
+  const existingItem = await fetchMediaItemsById(media_id);
+  if (!existingItem) {
+    throw new Error(`Media item with ID ${media_id} not found.`);
+  }
+  let sql;
+  let params;
 
+  if (user_level_id === 2) {
+  sql = `
+    UPDATE MediaItems
+    SET 
+      title = ?, 
+      description = ?, 
+      filename = ?, 
+      filesize = ?, 
+      media_type = ?
+    WHERE media_id = ?`;
+
+  // Use existing values for fields if they are not provided
+  params = [
+    modifiedItem.title || existingItem.title,
+    modifiedItem.description || existingItem.description,
+    modifiedItem.filename || existingItem.filename,
+    modifiedItem.filesize || existingItem.filesize,
+    modifiedItem.media_type || existingItem.media_type,
+    media_id,
+    user_id,
+  ];
+  } else {
+    sql = `
+    UPDATE MediaItems
+    SET 
+      title = ?, 
+      description = ?, 
+      filename = ?, 
+      filesize = ?, 
+      media_type = ?
+    WHERE media_id = ? AND user_id = ?`;
+    params = [
+      modifiedItem.title || existingItem.title,
+      modifiedItem.description || existingItem.description,
+      modifiedItem.filename || existingItem.filename,
+      modifiedItem.filesize || existingItem.filesize,
+      modifiedItem.media_type || existingItem.media_type,
+      media_id,];
+  }
   try {
     const [result] = await promisePool.query(sql, params);
-    if (result) {
-      console.log('modifyMediaItem', result);
-      return result.affectedRows;
+
+    if (result.affectedRows === 0) {
+      if (user_level_id !== 2) {
+        throw new Error('Not authorized to modify this item.');
+      } else {
+        throw new Error('Media item not found.');
+      }
     }
+
+    return result.affectedRows;
   } catch (e) {
-    console.log('modifyMediaItem', e.message);
-    throw new Error('Database error' + e.message);
+    console.error('modifyMediaItem Database error:', e.message);
+    throw new Error('Database error: ' + e.message);
   }
-}
+};
+
 
 /**
  *  
@@ -116,21 +155,35 @@ const modifyMediaItem = async (media_id, user_id, modifiedItem) => {
  * @throws {Error} Database error
  * @async
  */
-const deleteMediaItem = async (id) => {
-  const sql = 'DELETE FROM mediaitems WHERE media_id = ?';
+const deleteMediaItem = async (id, user_id, user_level_id) => {
+  let sql 
+  let params
+  // admins are level 2
+  if (user_level_id === 2) {
+    sql = 'DELETE FROM mediaitems WHERE media_id = ?';
+    params = [id];
+  } else {
+    sql = 'DELETE FROM mediaitems WHERE media_id = ? AND user_id = ?';
+    params = [id, user_id];
+  }
   try {
-    const [result] = await promisePool.query(sql, [id]);
+    const [result] = await promisePool.query(sql, params);
+
+    // Check if the item was deleted
     if (result.affectedRows > 0) {
       console.log('deleteMediaItem', `Deleted media item with ID ${id}`);
-      return {success: true};
+      return { success: true };
     } else {
-      return {success: false, error: 'Media item not found'};
+      // If no rows were affected, the item might not exist
+      return { success: false, error: 'Media item not found' };
     }
   } catch (e) {
+    // Log the error for debugging purposes
     console.log('deleteMediaItem', e.message);
-    return {success: false, error : 'Database error' + e.message};
+    return { success: false, error: 'Database error: ' + e.message };
   }
-}
+};
+
 
 
 

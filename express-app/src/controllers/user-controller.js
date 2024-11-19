@@ -4,6 +4,7 @@ import {
   fetchUserById,
   deleteUser,
   modifyUser,
+  checkUsernameOrEmailExists
 } from '../models/user-models.js';
 
 /**
@@ -84,27 +85,33 @@ const getUserById = async (req, res) => {
  * @param {Object} res - The response object used to send the response.
  */
 const deleteUserById = async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const item = await fetchUserById(id);
-
-    if (item && item.user_id === req.user.user_id) {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await fetchUserById(id);
+  
+      // Step 1: Check if the user exists
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Step 2: Check if the user is authorized to delete
+      // Admin can delete any user, regular user can only delete their own account
+      if (req.user.user_level_id !== 2 && user.user_id !== req.user.user_id) {
+        return res.status(403).json({ message: 'You can only delete your own account' });
+      }
+  
+      // Step 3: Proceed with the deletion
       const result = await deleteUser(id);
       if (result.success) {
-        res.status(200).json({ message: `User with ID ${id} was deleted.` });
-      } else if (result.error === 'User not found') {
-        res.status(404).json({ message: `User with ID ${id} not found.` });
+        return res.status(200).json({ message: `User with ID ${id} was deleted.` });
       } else {
-        res.status(500).json({ message: result.error });
+        return res.status(500).json({ message: 'Failed to delete user' });
       }
-    } else {
-      res.status(403).json({ message: 'You can only delete your own user' });
+    } catch (e) {
+      console.error('deleteUser', e.message);
+      res.status(500).json({ message: 'Error in deleteUser database query' });
     }
-  } catch (e) {
-    console.error('deleteUserById', e.message);
-    res.status(500).json({ message: 'Error in deleteUserById database query' });
-  }
-}
+  };  
 
 
 /**
@@ -129,21 +136,39 @@ const modifyUserById = async (req, res) => {
   };
 
   try {
+    // Fetch the user to validate ownership
     const item = await fetchUserById(id);
-    if (item && item.user_id === req.user.user_id) {
-      const result = await modifyUser(id, modifiedUser);
-      if (result) {
-        res.status(200).json({ message: 'User modified', id });
-      } else {
-        res.status(404).json({ message: 'User not found' });
-      }
+    if (!item) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the requesting user is allowed to modify this user
+    if (item.user_id !== req.user.user_id && req.user.user_level_id !== 2) {
+      return res.status(403).json({ message: 'Only admins can modify other users.' });
+    }
+
+    // Check if the new username or email already exists for another user
+    const isConflict = await checkUsernameOrEmailExists(modifiedUser.username, modifiedUser.email, id);
+    if (isConflict) {
+      return res.status(409).json({ message: 'Username or email is already taken' });
+    }
+
+    // Update the user
+    const result = await modifyUser(id, modifiedUser);
+    if (result > 0) {
+      res.status(200).json({ message: 'User modified', id });
     } else {
-      res.status(403).json({ message: 'You can only modify your own user.' });
+      res.status(500).json({ message: 'Failed to modify user' });
     }
   } catch (e) {
     console.error('modifyUserById', e.message);
     res.status(500).json({ message: 'Error in modifyUserById database query' });
   }
-}
+};
+
+
+
+
+
 
 export {getUsers, postUser, getUserById, deleteUserById, modifyUserById};

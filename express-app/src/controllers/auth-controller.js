@@ -7,7 +7,7 @@ const postLogin = async (req, res) => {
   const {username, password} = req.body;
   const user = await selectUsernameAndPassword(username, password);
   if (user) {
-    const token = jwt.sign({user_id: user.user_id}, process.env.JWT_SECRET, {expiresIn: process.env.EXPIRES_IN});
+    const token = jwt.sign({user_id: user.user_id, user_level_id: user.user_level_id}, process.env.JWT_SECRET, {expiresIn: process.env.EXPIRES_IN});
     res.json({...user, token});
   } else {
     res.sendStatus(401);

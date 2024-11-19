@@ -1,0 +1,40 @@
+# Ratings API
+
+## Ratings resource
+
+### Get all ratings
+GET http://localhost:3000/api/ratings
+
+### Get a rating based on ID
+GET http://localhost:3000/api/ratings/2
+
+### Get all ratings for a specific media item
+GET http://localhost:3000/api/ratings/media/3
+
+### Get all ratings for a specific user
+GET http://localhost:3000/api/ratings/user/44
+
+### Test not found (invalid rating ID)
+GET http://localhost:3000/api/ratings/963
+
+### Create a new rating
+POST http://localhost:3000/api/ratings
+Content-Type: application/json
+
+{
+  "rating_value": 1,
+  "media_id": 3,
+  "user_id": 1
+}
+
+### Modify an existing rating by ID
+PUT http://localhost:3000/api/ratings/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw
+
+{
+  "rating_value": 5
+}
+
+### Delete a rating by ID
+DELETE http://localhost:3000/api/ratings/6

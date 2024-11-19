@@ -29,9 +29,9 @@ const fetchRatings = async () => {
  */
 const fetchRatingById = async (id) => {
   try {
-    const sql = 'SELECT * FROM ratings WHERE rating_id = ?';
+    const sql = 'SELECT rating_id, user_id, rating_value FROM Ratings WHERE rating_id = ?';
     const [rows] = await promisePool.query(sql, [id]);
-    if (rows) {
+    if (rows && rows.length > 0) {
       return rows[0];
     }
   } catch (e) {
@@ -128,21 +128,20 @@ const addRating = async (newRating) => {
  */
 const modifyRating = async (id, modifiedRating) => {
   const sql = `
-        UPDATE ratings
-        SET rating_value = ?
-        WHERE rating_id = ?`;
+    UPDATE ratings
+    SET rating_value = ?
+    WHERE rating_id = ?`;
   const params = [modifiedRating.rating_value, id];
+
   try {
     const [result] = await promisePool.query(sql, params);
-    if (result) {
-      console.log('modifyRating', result);
-      return result.affectedRows > 0;
-    }
+    return result.affectedRows > 0;  // Returns true if the update was successful
   } catch (e) {
     console.log('modifyRating', e.message);
     throw new Error('Database error: ' + e.message);
   }
 };
+
 
 /**
  *  
@@ -157,16 +156,17 @@ const deleteRating = async (id) => {
     const [result] = await promisePool.query(sql, [id]);
     if (result.affectedRows > 0) {
       console.log('deleteRating', 'Deleted rating with ID', id);
-      return {success: true};
+      return { success: true };
     } else {
       console.log('deleteRating', `Rating with ID ${id} not found`);
-      return {success: false, error: 'Rating not found'};
+      return { success: false, error: 'Rating not found' };
     }
   } catch (e) {
-    console.log('deleteRating', e.message);
+    console.log('deleteRating Error:', e.message);
     throw new Error('Database error: ' + e.message);
   }
 };
+
 
 export {
   fetchRatings,

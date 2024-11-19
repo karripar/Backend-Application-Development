@@ -1,0 +1,71 @@
+# User Request
+
+## User resource
+
+### Get all users
+GET http://localhost:3000/api/users
+Content-Type: application/json
+
+###
+
+### Get a user based on ID
+GET http://localhost:3000/api/users/2
+Content-Type: application/json
+
+###
+
+### Test not found (invalid user ID)
+GET http://localhost:3000/api/users/963
+Content-Type: application/json
+
+###
+
+### Create a new user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "username": "newuser3",
+  "email": "newuser3@example.com",
+  "password": "password1232",
+  "user_level_id": 1
+}
+
+###
+
+### Modify an existing user by ID
+PUT http://localhost:3000/api/users/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VyX2xldmVsX2lkIjoxLCJpYXQiOjE3MzIwMDQ5NzMsImV4cCI6MTczMjA5MTM3M30.K_ag8w73B__H0IQfAPcE20CMmTqaMO1dBYhQuO7CVRE
+
+{
+  "username": "Pekka",
+  "email": "Matikainen",
+  "user_level_id": "2"
+}
+
+
+### Delete a user by ID
+DELETE http://localhost:3000/api/users/3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VyX2xldmVsX2lkIjoxLCJpYXQiOjE3MzIwMDQ4MjAsImV4cCI6MTczMjA5MTIyMH0.fS5EYxkJVJbIBcd7bu_5OdQwdDj5wyh61mvqobQ4K9E
+
+
+
+## Login resource
+
+### Login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "uusinimi",
+  "password": "uusisalasana"
+}
+
+### Get my user info
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw
+
+
+

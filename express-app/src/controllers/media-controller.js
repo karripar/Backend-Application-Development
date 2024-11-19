@@ -93,21 +93,29 @@ const deleteItem = async (req, res) => {
     const id = parseInt(req.params.id);
     const item = await fetchMediaItemsById(id);
 
-    if (item && item.user_id === req.user.user_id) {
-      const result = await deleteMediaItem(id);
-      if (result.success) {
-        res.status(200).json({ message: 'Item deleted', id });
-      } else if (result.error === 'Media item not found') {
-        res.status(404).json({ message: 'Media item not found' });
-      }
+    // Step 1: Check if the item exists
+    if (!item) {
+      return res.status(404).json({ message: 'Media item not found' });
+    }
+
+    // Step 2: Check if the user owns the media item
+    if (item.user_id !== req.user.user_id) {
+      return res.status(403).json({ message: 'You can only delete your own media items' });
+    }
+
+    // Step 3: Proceed with the deletion
+    const result = await deleteMediaItem(id, req.user.user_id, req.user.user_level_id);
+    if (result.success) {
+      return res.status(200).json({ message: 'Item deleted successfully', id });
     } else {
-      res.status(403).json({ message: 'You can only delete your own media items' });
+      return res.status(500).json({ message: 'Failed to delete media item' });
     }
   } catch (e) {
     console.error('deleteItem', e.message);
     res.status(500).json({ message: 'Error in deleteItem database query' });
   }
 };
+
 /**
  * Modifies an existing media item by its media ID.
  * If the item is found, it updates its data with the request body and sends a response indicating success.
@@ -122,27 +130,34 @@ const deleteItem = async (req, res) => {
  */
 const modifyItem = async (req, res) => {
   const { title, description } = req.body;
-  console.log('put req body', req.body);
+  console.log('PUT request body:', req.body);
 
   const newDetails = { title, description };
 
   try {
     const item = await fetchMediaItemsById(req.params.id);
 
-    if (item && item.user_id === req.user.user_id) {
-      const itemsEdited = await modifyMediaItem(req.params.id, req.user.user_id, newDetails);
+    if (!item) {
+      return res.status(404).json({ message: 'Media item not found' });
+    }
+
+    // Check permissions: Admin can modify any item, regular users can modify only their own
+    if (req.user.user_level === 2 || item.user_id === req.user.user_id) {
+      const itemsEdited = await modifyMediaItem(req.params.id, req.user.user_id, req.user.user_level_id, newDetails);
+
       if (itemsEdited === 0) {
-        res.status(404).json({ message: 'Media Item not found or no permission to edit' });
+        res.status(404).json({ message: 'Media item not found or no changes were made' });
       } else {
-        res.status(200).json({ message: 'Item updated', id: req.params.id });
+        res.status(200).json({ message: 'Item updated successfully', id: req.params.id });
       }
     } else {
       res.status(403).json({ message: 'You can only modify your own media items' });
     }
   } catch (e) {
-    console.error('modifyItem', e.message);
+    console.error('modifyItem Error:', e.message);
     res.status(500).json({ message: 'Error in modifyItem database query' });
   }
 };
+
 
 export {getItems, postItem, getItemById, deleteItem, modifyItem};
