@@ -25,30 +25,30 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "username": "newuser3",
-  "email": "newuser3@example.com",
-  "password": "password1232",
-  "user_level_id": 1
+  "username": "karri5",
+  "email": "newuser7@example.com",
+  "password": "password123",
+  "user_level_id": "1"
 }
 
 ###
 
 ### Modify an existing user by ID
-PUT http://localhost:3000/api/users/2
+PUT http://localhost:3000/api/users/5
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VyX2xldmVsX2lkIjoxLCJpYXQiOjE3MzIwMDQ5NzMsImV4cCI6MTczMjA5MTM3M30.K_ag8w73B__H0IQfAPcE20CMmTqaMO1dBYhQuO7CVRE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2xldmVsX2lkIjpudWxsLCJpYXQiOjE3MzIxMDEzNjksImV4cCI6MTczMjE4Nzc2OX0.f2uR32n6-n-T_LZVAhOPQAfc4IIYPRpxu5wsj6J0wEU
 
 {
-  "username": "Pekka",
-  "email": "Matikainen",
-  "user_level_id": "2"
+  "username": "karri",
+  "email": "karri@gmail.com",
+  "user_level_id": "1"
 }
 
 
 ### Delete a user by ID
-DELETE http://localhost:3000/api/users/3
+DELETE http://localhost:3000/api/users/5
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VyX2xldmVsX2lkIjoxLCJpYXQiOjE3MzIwMDQ4MjAsImV4cCI6MTczMjA5MTIyMH0.fS5EYxkJVJbIBcd7bu_5OdQwdDj5wyh61mvqobQ4K9E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX2xldmVsX2lkIjoyLCJpYXQiOjE3MzIxMDIwMTQsImV4cCI6MTczMjE4ODQxNH0.NIYMBfHv-gHJw_vBFHpQK5IM4Cri3P4mGr1GuOvdunw
 
 
 
@@ -59,8 +59,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "uusinimi",
-  "password": "uusisalasana"
+  "username": "JohnDoe",
+  "password": "to-be-hashed-pw1"
 }
 
 ### Get my user info

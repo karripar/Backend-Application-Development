@@ -32,8 +32,8 @@ const postUser = async (req, res) => {
   const newUser = {
     username: req.body.username,
     email: req.body.email,
-    password: req.body.password, // Ensure hashing in actual implementation
-    user_level: req.body.user_level,
+    password: req.body.password,
+    user_level_id: req.body.user_level_id,
   };
 
   try {
