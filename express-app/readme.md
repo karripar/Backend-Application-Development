@@ -1,6 +1,6 @@
 # Database REST API
 
-This project provides a RESTful API with endpoints for managing user data and media resources. It serves mock data for testing and development purposes.
+This project provides a RESTful API with endpoints for managing user data, media and ratings resources. Data is served from a mysql database. 
 
 ## Documentation
 
