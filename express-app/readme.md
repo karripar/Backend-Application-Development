@@ -1,6 +1,5 @@
 # Database REST API
 
-Completed all parts in the assignment list for Week 4. Generated extensive JSDoc documentation and this readme file. 
 This project provides a RESTful API with endpoints for managing user data and media resources. It serves mock data for testing and development purposes.
 
 ## Documentation
