@@ -4,6 +4,7 @@ import express from 'express';
 import { getUsers, getUserById, postUser, modifyUserById, deleteUserById } from '../controllers/user-controller.js';
 import { authenticateToken } from '../middlewares/authentication.js';
 import {body} from 'express-validator';
+import { validationErrorHandler } from '../middlewares/error-handler.js';
 
 const userRouter = express.Router();
 
@@ -22,6 +23,7 @@ userRouter
     body('username').trim().isAlphanumeric().isLength({min: 3, max: 20}),
     body('password').isLength({min: 8}),
     body('email').isEmail(),
+    validationErrorHandler,
     postUser);
 
 /**
@@ -36,6 +38,7 @@ userRouter.route('/:id')
     body('username').trim().isAlphanumeric().isLength({min: 3, max: 20}),
     body('password').isLength({min: 8}),
     body('email').isEmail(),
+    validationErrorHandler,
     modifyUserById)
   .delete(authenticateToken, deleteUserById);
 

@@ -45,7 +45,8 @@ mediaRouter
     authenticateToken,
     body('title').trim().isLength({min: 3, max: 50}),
     body('description').trim().isLength({max: 255}),
-    validationErrorHandler, modifyItem
+    validationErrorHandler, 
+    modifyItem
   )
   .delete(authenticateToken, deleteItem);
 

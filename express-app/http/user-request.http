@@ -33,13 +33,13 @@ Content-Type: application/json
 ###
 
 ### Modify an existing user by ID
-PUT http://localhost:3000/api/users/5
+PUT http://localhost:3000/api/users/2
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2xldmVsX2lkIjpudWxsLCJpYXQiOjE3MzIxMDEzNjksImV4cCI6MTczMjE4Nzc2OX0.f2uR32n6-n-T_LZVAhOPQAfc4IIYPRpxu5wsj6J0wEU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNSwidXNlcl9sZXZlbF9pZCI6MSwiaWF0IjoxNzMyNTYzMDU1LCJleHAiOjE3MzI2NDk0NTV9.eIRR0Gelpxr4qhkn7MsEu6lfHZ6lZfbb6Ljh5oBkScs
 
 {
-  "username": "karri",
-  "email": "karri@gmail.com",
+  "username": "hehehehhe",
+  "email": "kusetus@gmail.com",
   "user_level_id": "1"
 }
 
@@ -58,8 +58,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "JohnDoe",
-  "password": "to-be-hashed-pw1"
+  "username": "karri5",
+  "password": "password123"
 }
 
 ### Get my user info
