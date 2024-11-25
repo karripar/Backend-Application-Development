@@ -29,17 +29,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpY
 
 ### Delete a media item based on id
 DELETE http://localhost:3000/api/media/4
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX2xldmVsX2lkIjoyLCJpYXQiOjE3MzI1MjQ4NzYsImV4cCI6MTczMjYxMTI3Nn0.JG2J-3-tX-EhJDLRhHXKI2A70wO4nm8euyMSQ9OoBeo
 
 ### Create an item
 POST http://localhost:3000/api/media
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkpvaG5Eb2UiLCJwYXNzd29yZCI6InRvLWJlLWhhc2hlZC1wdzEiLCJlbWFpbCI6ImpvaG5kb2VAZXhhbXBsZS5jb20iLCJ1c2VyX2xldmVsX2lkIjoyLCJjcmVhdGVkX2F0IjoiMjAyNC0xMS0xM1QxMToxNzoxOC4wMDBaIiwiaWF0IjoxNzMxOTE5ODE4LCJleHAiOjE3MzIwMDYyMTh9.Ys5btjN6XoN5O32EiN7tL2cT4Yq8K-1WiHRdxpkJY9o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX2xldmVsX2lkIjoyLCJpYXQiOjE3MzI1MjQ4NzYsImV4cCI6MTczMjYxMTI3Nn0.JG2J-3-tX-EhJDLRhHXKI2A70wO4nm8euyMSQ9OoBeo
 Content-Type: multipart/form-data; boundary=----Boundary
 
 ------Boundary
 Content-Disposition: form-data; name="title"
 
-New cat image
+New cat picture
 ------Boundary
 Content-Disposition: form-data; name="description"
 
@@ -50,9 +50,9 @@ Content-Disposition: form-data; name="user_id"
 1
 ------Boundary
 Content-Disposition: form-data; name="file"; filename="kissa2.png"
-Content-Type: image/png
+Content-Type: application/javascript
 
-< ./media/kissa2.png
+< ./media/test.js
 ------Boundary--
 
 

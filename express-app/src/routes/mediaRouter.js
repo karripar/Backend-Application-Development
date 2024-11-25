@@ -1,15 +1,21 @@
 'use strict';
 
 import express from 'express';
-import { getItems, getItemById, postItem, modifyItem, deleteItem } from '../controllers/media-controller.js';
-import multer from 'multer';
-import { authenticateToken } from '../middlewares/authentication.js';
+import {
+  getItems,
+  getItemById,
+  postItem,
+  modifyItem,
+  deleteItem,
+} from '../controllers/media-controller.js';
 
-const upload = multer({ 
-  dest: 'uploads/',
-  limits: {fileSize: 2 * 1024 * 1024},
- });
+import {authenticateToken} from '../middlewares/authentication.js';
+import 'dotenv/config';
+import {body} from 'express-validator';
+import upload from '../middlewares/upload.js';
+import { validationErrorHandler } from '../middlewares/error-handler.js'
 
+;
 const mediaRouter = express.Router();
 
 // Media resource endpoints
@@ -23,15 +29,23 @@ const mediaRouter = express.Router();
 mediaRouter
   .route('/')
   .get(getItems)
-  .post(authenticateToken, upload.single('file'), postItem)
-;
+  .post(
+    authenticateToken,
+    upload.single('file'),
+    body('title').trim().isLength({min: 3, max: 50}),
+    body('description').trim().isLength({max: 255}),
+    validationErrorHandler,
+    postItem,
+  );
 
-mediaRouter.route('/:id')
+mediaRouter
+  .route('/:id')
   .get(getItemById)
-  .put(authenticateToken, modifyItem)
+  .put(authenticateToken,
+    body('title').trim().isLength({min: 3, max: 50}),
+    body('description').trim().isLength({max: 255}),
+    validationErrorHandler, modifyItem
+  )
   .delete(authenticateToken, deleteItem);
 
-
 export default mediaRouter;
-
-

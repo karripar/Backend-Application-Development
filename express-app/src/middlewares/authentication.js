@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
+import {customError} from './error-handler.js';
 
 const authenticateToken = (req, res, next) => {
   console.log('authenticateToken', req.headers);
@@ -13,10 +14,11 @@ const authenticateToken = (req, res, next) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
   } catch (e) {
-    res.status(403).send({message: 'invalid token'});
     console.error('authenticateToken', e.message);
+    return next(customError('Invalid token', 401));
   }
 };
+
 
 
 

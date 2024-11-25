@@ -1,3 +1,4 @@
+import { customError } from '../middlewares/error-handler.js';
 import {
   fetchUsers,
   addUser,
@@ -12,12 +13,12 @@ import {
  * @function
  * @param {Object} res - The response object used to send the JSON response.
  */
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     res.json(await fetchUsers());
   } catch (e) {
     console.error('getUsers', e.message);
-    res.status(500).json({message: 'Error in getUsers'});
+    return next(customError('Error in getUsers database query', 500));
   }
 };
 
@@ -28,12 +29,12 @@ const getUsers = async (req, res) => {
  * @param {Object} req - The request object containing the new user data in the body.
  * @param {Object} res - The response object used to send the response.
  */
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
   const newUser = {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    user_level_id: req.body.user_level_id,
+    user_level_id: req.body.user_level_id || 1,
   };
 
   try {
@@ -41,14 +42,14 @@ const postUser = async (req, res) => {
     if (newId) {
       res.status(201).json({message: 'User added', id: newId});
     } else {
-      res.status(400).json({message: 'User not added: failure'});
+      return next(customError('User not added: failure', 400));
     }
   } catch (e) {
     if (e.message === 'Duplicate entry, user already exists') {
-      res.status(400).json({message: 'User not added: User already exists.'});
+      return next(customError('User not added: User already exists', 400));
     } else {
       console.error('postUser', e.message);
-      res.status(500).json({message: 'Error in postUser database query'});
+      return next(customError('Error in postUser database query', 500));
     }
   }
 };
@@ -61,18 +62,18 @@ const postUser = async (req, res) => {
  * @param {Object} req - The request object containing the user ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
  */
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
     const user = await fetchUserById(id);
     if (user) {
       res.json(user);
     } else {
-      res.status(404).json({message: 'User not found'});
+      return next(customError('User not found', 404));
     }
   } catch (e) {
     console.error('getUserById', e.message);
-    res.status(500).json({message: 'Error in getUserById database query'});
+    return next(customError('Error in getUserById database query', 500));
   }
 };
 
@@ -84,32 +85,32 @@ const getUserById = async (req, res) => {
  * @param {Object} req - The request object containing the user ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
  */
-const deleteUserById = async (req, res) => {
+const deleteUserById = async (req, res, next) => {
     try {
       const id = parseInt(req.params.id);
       const user = await fetchUserById(id);
   
       // Step 1: Check if the user exists
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return next(customError('User not found', 404));
       }
   
       // Step 2: Check if the user is authorized to delete
       // Admin can delete any user, regular user can only delete their own account
       if (req.user.user_level_id !== 2 && user.user_id !== req.user.user_id) {
-        return res.status(403).json({ message: 'You can only delete your own account' });
+        return next(customError('You can only delete your own account', 403));
       }
   
       // Step 3: Proceed with the deletion
       const result = await deleteUser(id);
       if (result.success) {
-        return res.status(200).json({ message: `User with ID ${id} was deleted.` });
+        res.status(204).json({ message: 'User deleted', id });
       } else {
-        return res.status(500).json({ message: 'Failed to delete user' });
+        return next(customError('Failed to delete user', 500));
       }
     } catch (e) {
       console.error('deleteUser', e.message);
-      res.status(500).json({ message: 'Error in deleteUser database query' });
+      return next(customError('Error in deleteUser database query', 500));
     }
   };  
 
@@ -126,7 +127,7 @@ const deleteUserById = async (req, res) => {
  * @throws {Object} - A JSON response indicating that the user was not found.
  * @throws {Object} - A JSON response indicating that the user can only modify their own user.
  */
-const modifyUserById = async (req, res) => {
+const modifyUserById = async (req, res, next) => {
   const id = parseInt(req.params.id);
   const modifiedUser = {
     username: req.body.username,
@@ -139,18 +140,18 @@ const modifyUserById = async (req, res) => {
     // Fetch the user to validate ownership
     const item = await fetchUserById(id);
     if (!item) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(customError('User not found', 404));
     }
 
     // Check if the requesting user is allowed to modify this user
     if (item.user_id !== req.user.user_id && req.user.user_level_id !== 2) {
-      return res.status(403).json({ message: 'Only admins can modify other users.' });
+      return next(customError('You can only modify your own user', 403));
     }
 
     // Check if the new username or email already exists for another user
     const isConflict = await checkUsernameOrEmailExists(modifiedUser.username, modifiedUser.email, id);
     if (isConflict) {
-      return res.status(409).json({ message: 'Username or email is already taken' });
+      return next(customError('Username or email already exists', 409));
     }
 
     // Update the user
@@ -158,11 +159,11 @@ const modifyUserById = async (req, res) => {
     if (result > 0) {
       res.status(200).json({ message: 'User modified', id });
     } else {
-      res.status(500).json({ message: 'Failed to modify user' });
+      return next(customError('User not found', 404));
     }
   } catch (e) {
     console.error('modifyUserById', e.message);
-    res.status(500).json({ message: 'Error in modifyUserById database query' });
+    return next(customError('Error in modifyUserById database query', 500));
   }
 };
 

@@ -5,17 +5,18 @@ import {
   deleteMediaItem,
   modifyMediaItem,
 } from '../models/media-model.js';
+import { customError } from '../middlewares/error-handler.js';
 /**
  * Retrieves all media items from the database and sends them as a JSON response.
  * @function
  * @param {Object} res - The response object used to send the JSON response.
  */
-const getItems = async (req, res) => {
+const getItems = async (req, res, next) => {
   try {
     res.json(await fetchMediaItems());
   } catch (e) {
     console.error('getItems', e.message);
-    res.status(500).json({message: 'Error in getItems'});
+    return next(customError('Error in getItems database query', 500));    
   }
 };
 
@@ -27,7 +28,7 @@ const getItems = async (req, res) => {
  * @param {Object} req - The request object containing the new media data in the body.
  * @param {Object} res - The response object used to send the response.
  */
-const postItem = async (req, res) => {
+const postItem = async (req, res, next) => {
   console.log('post req body', req.body);
   console.log('post req file', req.file);
   // Add the new media item to the array
@@ -45,11 +46,11 @@ const postItem = async (req, res) => {
     if (newId) {
       res.status(201).json({message: 'Item added', ...newId});
     } else {
-      res.status(400).json({message: 'Item not added: failure'});
+      return next(customError('Item not added: failure', 400));
     }
   } catch (e) {
     console.error('postItem', e.message);
-    res.status(500).json({message: 'Error in postItem database query'});
+    return next(customError('Error in postItem database query', 500));
   }
 };
 
@@ -63,7 +64,7 @@ const postItem = async (req, res) => {
  * @param {Object} req - The request object containing the media ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
  */
-const getItemById = async (req, res) => {
+const getItemById = async (req, res, next) => {
   // TODO: Implement the try-catch block for db errors
   try {
     const id = parseInt(req.params.id); // Parse media ID from URL parameter
@@ -71,11 +72,11 @@ const getItemById = async (req, res) => {
     if (item) {
       res.json(item);
     } else {
-      res.status(404).json({message: 'Item not found'});
+      return next(customError('Media item not found', 404));
     }
   } catch (e) {
     console.error('getItemById', e.message);
-    res.status(500).json({message: 'Error in getItemById database query'});
+    return next(customError('Error in getItemById database query', 500));
   }
 };
 
@@ -88,19 +89,19 @@ const getItemById = async (req, res) => {
  * @param {Object} req - The request object containing the media ID in the URL parameters.
  * @param {Object} res - The response object used to send the response.
  */
-const deleteItem = async (req, res) => {
+const deleteItem = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
     const item = await fetchMediaItemsById(id);
 
     // Step 1: Check if the item exists
     if (!item) {
-      return res.status(404).json({ message: 'Media item not found' });
+      return next(customError('Media item not found', 404));
     }
 
     // Step 2: Check if the user owns the media item
     if (item.user_id !== req.user.user_id) {
-      return res.status(403).json({ message: 'You can only delete your own media items' });
+      return next(customError('You can only delete your own media items', 403));
     }
 
     // Step 3: Proceed with the deletion
@@ -108,11 +109,11 @@ const deleteItem = async (req, res) => {
     if (result.success) {
       return res.status(200).json({ message: 'Item deleted successfully', id });
     } else {
-      return res.status(500).json({ message: 'Failed to delete media item' });
+      return next(customError('Failed to delete media item', 500));
     }
   } catch (e) {
     console.error('deleteItem', e.message);
-    res.status(500).json({ message: 'Error in deleteItem database query' });
+    return next(customError('Error in deleteItem database query', 500));
   }
 };
 
@@ -128,7 +129,7 @@ const deleteItem = async (req, res) => {
  * @throws {Object} - A JSON response indicating that the media item was not found.
  * @throws {Object} - A JSON response indicating that the user can only modify their own media items.
  */
-const modifyItem = async (req, res) => {
+const modifyItem = async (req, res, next) => {
   const { title, description } = req.body;
   console.log('PUT request body:', req.body);
 
@@ -138,7 +139,7 @@ const modifyItem = async (req, res) => {
     const item = await fetchMediaItemsById(req.params.id);
 
     if (!item) {
-      return res.status(404).json({ message: 'Media item not found' });
+      return next(customError('Media item not found', 404));
     }
 
     // Check permissions: Admin can modify any item, regular users can modify only their own
@@ -146,16 +147,16 @@ const modifyItem = async (req, res) => {
       const itemsEdited = await modifyMediaItem(req.params.id, req.user.user_id, req.user.user_level_id, newDetails);
 
       if (itemsEdited === 0) {
-        res.status(404).json({ message: 'Media item not found or no changes were made' });
+        return next(customError('Media item not found or no changes were made', 404));
       } else {
         res.status(200).json({ message: 'Item updated successfully', id: req.params.id });
       }
     } else {
-      res.status(403).json({ message: 'You can only modify your own media items' });
+      return next(customError('You can only modify your own media items', 403));
     }
   } catch (e) {
     console.error('modifyItem Error:', e.message);
-    res.status(500).json({ message: 'Error in modifyItem database query' });
+    return next(customError('Error in modifyItem database query', 500));
   }
 };
 

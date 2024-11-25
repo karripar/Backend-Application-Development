@@ -65,7 +65,14 @@ Content-Type: application/json
 
 ### Get my user info
 GET http://localhost:3000/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3MzE5MjA1MTAsImV4cCI6MTczMjAwNjkxMH0.0Hr7VW0ejp_s0BdWxPksZQWrL4xKTnxgM0YibFzRsaw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX2xldmVsX2lkIjoyLCJpYXQiOjE3MzI1MjE4NzksImV4cCI6MTczMjYwODI3OX0.iNRvwdEgWeL4D8VWlPFj3NW6rVfkwXUkWJ80tw9vu6w
 
+### Register
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
 
-
+{
+  "username": "NewUser",
+  "password": "new",
+  "email": "newuser@example.com"
+}

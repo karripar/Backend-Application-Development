@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import {fetchUserById, selectUsernameAndPassword} from '../models/user-models.js';
 import 'dotenv/config';
+import { customError } from '../middlewares/error-handler.js';
 
-const postLogin = async (req, res) => {
+const postLogin = async (req, res, next) => {
   console.log('postLogin', req.body);
   const {username, password} = req.body;
   const user = await selectUsernameAndPassword(username, password);
@@ -10,11 +11,12 @@ const postLogin = async (req, res) => {
     const token = jwt.sign({user_id: user.user_id, user_level_id: user.user_level_id}, process.env.JWT_SECRET, {expiresIn: process.env.EXPIRES_IN});
     res.json({...user, token});
   } else {
-    res.sendStatus(401);
+    //res.sendStatus(401);
+    return next(customError('Invalid username or password', 401));
   }
 };
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
   try {
   const user = await fetchUserById(req.user.user_id);
   if (user) {
@@ -23,8 +25,7 @@ const getMe = async (req, res) => {
     res.sendStatus(401);
   } 
 } catch (e) {
-  console.error('getMe', e.message);
-  res.status(503).json({message: 'Error in getMe'});
+  return next(customError(e.message, 503));
 };
 }
 
