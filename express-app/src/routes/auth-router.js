@@ -8,8 +8,14 @@ import { validationErrorHandler } from '../middlewares/error-handler.js';
 const authRouter = express.Router();
 
 // Out resource endpoints
-authRouter.route('/login').post(postLogin);
+authRouter.route('/login').post(
+  body('username').isAlphanumeric().isLength({min: 3, max: 20}),
+  body('password').isLength({min: 8}),
+  validationErrorHandler,
+  postLogin);
+
 authRouter.route('/me').get(authenticateToken, getMe);
+
 authRouter
   .route('/register')
   .post(

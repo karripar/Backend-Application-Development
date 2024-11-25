@@ -151,7 +151,11 @@ const modifyMediaItem = async (media_id, user_id, user_level_id, modifiedItem) =
 /**
  *  
  * @param {number} id - Media ID
+ * @param {number} user_id - User ID
+ * @param {number} user_level_id - User level ID
  * @returns {Promise<Object>} Promise object represents the success of the deletion
+ * @returns {Promise<Object>} Promise object represents the success of the deletion
+ * @throws {Error} Media item not found
  * @throws {Error} Database error
  * @async
  */

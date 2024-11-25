@@ -163,3 +163,162 @@ To interact with the API:
     - `404 Not Found`: Rating with specified ID does not exist.
 
 
+# Authorization Rules for Protected Routes
+
+In this application, certain API routes are protected to ensure that only authorized users can perform specific actions. These rules are implemented using middleware that validates the user's identity and role based on their JSON Web Token (JWT) and checks against the database where necessary.
+
+## Rules and Descriptions
+
+### **1. `PUT /api/media/:id` - Update Media Item**
+- **Authorization Rule**: Only the owner of the media item can update it.
+- **Implementation**: 
+  - The request's `user_id` (extracted from the JWT) is compared to the `user_id` associated with the media item in the database.
+  - If the IDs do not match, the request is rejected with a `403 Forbidden` response.
+- **Example Response**:
+  - **Success**: 
+    ```json
+    { "success": true, "message": "Media item updated successfully." }
+    ```
+  - **Failure**: 
+    ```json
+    { "success": false, "error": "You are not authorized to update this media item." }
+    ```
+
+---
+
+### **2. `DELETE /api/media/:id` - Delete Media Item**
+- **Authorization Rule**: Only the owner of the media item can delete it.
+- **Implementation**:
+  - The request's `user_id` (extracted from the JWT) is compared to the `user_id` associated with the media item in the database.
+  - Admins (`user_level_id === 2`) are allowed to delete any media item.
+- **Example Response**:
+  - **Success**: 
+    ```json
+    { "success": true, "message": "Media item deleted successfully." }
+    ```
+  - **Failure**: 
+    ```json
+    { "success": false, "error": "You are not authorized to delete this media item." }
+    ```
+
+---
+
+### **3. `PUT /api/users/` - Update User Info**
+- **Authorization Rule**: Users can update only their own information.
+- **Implementation**:
+  - The `user_id` from the JWT must match the `user_id` in the request body.
+  - Admins are allowed to update user information for all users.
+- **Example Response**:
+  - **Success**: 
+    ```json
+    { "success": true, "message": "User information updated successfully." }
+    ```
+  - **Failure**: 
+    ```json
+    { "success": false, "error": "You are not authorized to update this user information." }
+    ```
+
+---
+
+## Implementation Details
+- **Middleware**: Authorization logic is implemented as middleware that runs before the route handler.
+- **JWT Authentication**:
+  - JWTs are validated to ensure the user is authenticated.
+  - The token's payload contains the `user_id` and `user_level_id` to enforce the rules.
+- **Database Checks**:
+  - User and media ownership are verified by querying the database for matching `user_id` values.
+
+## Error Responses
+- Unauthorized actions return a `403 Forbidden` status with a descriptive error message.
+- Invalid or expired tokens return a `401 Unauthorized` status.
+
+## Notes
+- These rules ensure that data integrity and user privacy are maintained across the application.
+- Admin-level users (`user_level_id === 2`) are granted extended permissions as specified.
+
+---
+
+# Validation and Sanitization Rules
+
+In this application, server-side validation and sanitization are implemented for all input data using the `express-validator` library. These measures ensure that data integrity is maintained and that malicious or invalid data is rejected before reaching the application logic. Following rules and logic are applied to all routes to also ensure robust error handling and client side experience.
+
+## Validation Rules
+
+### **1. User Routes (`/api/users`)**
+
+#### **POST /api/users/** - Create a New User
+- **Validation Rules**:
+  - `username`: 
+    - Must be alphanumeric (`isAlphanumeric()`).
+    - Length must be between 3 and 20 characters (`isLength({ min: 3, max: 20 })`).
+    - Leading and trailing spaces are trimmed (`trim()`).
+  - `password`:
+    - Minimum length of 8 characters (`isLength({ min: 8 })`).
+  - `email`:
+    - Must be a valid email format (`isEmail()`).
+- **Sanitization**:
+  - Input fields are trimmed to remove excess whitespace.
+- **Example Validation Error**:
+  ```json
+  { "error": "Validation error: username, email" }
+
+
+### **PUT /api/users/** - Update User Info
+
+#### **Validation Rules**:
+- **`username`**: 
+  - Must be alphanumeric (`isAlphanumeric()`).
+  - Length must be between 3 and 20 characters (`isLength({ min: 3, max: 20 })`).
+  - Leading and trailing whitespace is trimmed (`trim()`).
+- **`password`**: 
+  - Minimum length of 8 characters (`isLength({ min: 8 })`).
+- **`email`**: 
+  - Must be a valid email format (`isEmail()`).
+
+#### **Sanitization**:
+- All input fields are trimmed to remove excess whitespace.
+- Strings are escaped to prevent malicious code injection (`escape()`).
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with details of the invalid fields.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: username, email" }
+
+### **PUT /api/media/:id** - Update Media Item
+
+#### **Validation Rules**:
+- **`title`**:
+  - Must not be empty (`notEmpty()`).
+  - Length must be between 3 and 50 characters (`isLength({ min: 3, max: 50 })`).
+  - Leading and trailing whitespace is trimmed (`trim()`).
+- **`description`**:
+  - Maximum length of 255 characters (`isLength({ max: 255 })`).
+  - Leading and trailing whitespace is trimmed (`trim()`).
+
+#### **Sanitization**:
+- All input fields are trimmed to remove excess whitespace.
+- Strings are escaped to prevent malicious code injection (`escape()`).
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with details of the invalid fields.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: title, description" }
+
+### **DELETE /api/media/:id** - Delete Media Item
+
+#### **Validation Rules**:
+- **`id`**:
+  - The `id` parameter in the URL must be a valid integer (`isInt()`).
+  - It must be a positive number (`isInt({ min: 1 })`).
+
+#### **Sanitization**:
+- No specific sanitization is applied to the `id` parameter because it is a number and sanitized using `isInt()`.
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: id" }
+

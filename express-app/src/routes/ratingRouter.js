@@ -1,6 +1,7 @@
 import express from 'express';
 import { getRatings, getRatingById, getRatingsByMediaId, getRatingsByUserId, postRating, modifyRatingById, deleteRatingById } from '../controllers/rating-controller.js';
 import { authenticateToken } from '../middlewares/authentication.js';
+import {body} from 'express-validator';
 
 const ratingRouter = express.Router();
 
@@ -15,7 +16,9 @@ const ratingRouter = express.Router();
 ratingRouter
   .route('/')
   .get(getRatings)
-  .post(postRating);
+  .post(
+    body('rating_value').isInt({min: 1, max: 5}),
+    postRating);
 
 
 /** 
@@ -47,8 +50,12 @@ ratingRouter.route('/media/:id')
  */
 ratingRouter.route('/:id')
   .get(getRatingById)
-  .put(authenticateToken, modifyRatingById)
-  .delete(authenticateToken, deleteRatingById);
+  .put(authenticateToken,
+    body('rating_value').isInt({min: 1, max: 5}),
+    modifyRatingById)
+  .delete(
+    authenticateToken, 
+    deleteRatingById);
 
 export default ratingRouter;
 

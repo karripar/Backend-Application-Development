@@ -27,8 +27,7 @@ Content-Type: application/json
 {
   "username": "karri5",
   "email": "newuser7@example.com",
-  "password": "password123",
-  "user_level_id": "1"
+  "password": "password123"
 }
 
 ###
@@ -73,6 +72,6 @@ Content-Type: application/json
 
 {
   "username": "NewUser",
-  "password": "new",
+  "password": "ne",
   "email": "newuser@example.com"
 }

@@ -59,7 +59,7 @@ const addUser = async (newUser) => {
     newUser.username,
     newUser.email,
     newUser.password,
-    newUser.user_level_id
+    newUser.user_level_id || 1
   ];
   try {
     const [result] = await promisePool.query(sql, params);

@@ -3,6 +3,7 @@
 import express from 'express';
 import { getUsers, getUserById, postUser, modifyUserById, deleteUserById } from '../controllers/user-controller.js';
 import { authenticateToken } from '../middlewares/authentication.js';
+import {body} from 'express-validator';
 
 const userRouter = express.Router();
 
@@ -17,7 +18,11 @@ const userRouter = express.Router();
 userRouter
   .route('/')
   .get(getUsers)
-  .post(postUser);
+  .post(
+    body('username').trim().isAlphanumeric().isLength({min: 3, max: 20}),
+    body('password').isLength({min: 8}),
+    body('email').isEmail(),
+    postUser);
 
 /**
  * Route to get, modify, or delete a user by ID.
@@ -27,7 +32,11 @@ userRouter
  */
 userRouter.route('/:id')
   .get(getUserById)
-  .put(authenticateToken, modifyUserById)
+  .put(authenticateToken,
+    body('username').trim().isAlphanumeric().isLength({min: 3, max: 20}),
+    body('password').isLength({min: 8}),
+    body('email').isEmail(),
+    modifyUserById)
   .delete(authenticateToken, deleteUserById);
 
 

@@ -8,14 +8,18 @@ import { validationResult } from 'express-validator';
  * @returns {Object} - A JSON object with an error message and a status
  */
 const validationErrorHandler = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-       const errorString = errors.array().map(err => err.path).join(', '); 
-       return res.status(400).json(`Validation error: ${errorString}`);
-    }
-    next();
-}
-
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.status(400).json({
+          message: 'Validation error',
+          errors: errors.array().map(err => ({
+              field: err.param,
+              message: `${err.msg} in ${err.path}`
+          }))
+      });
+  }
+  next();
+};
 /**
  * 
  * @param {string} message Error message
@@ -24,7 +28,7 @@ const validationErrorHandler = (req, res, next) => {
  */
 const customError = (message, status) => {
     const error = new Error(message);
-    error.status = status || 500;
+    error.status = error.status = Number.isInteger(status) ? status : 500;
     return error
   };
 
@@ -38,9 +42,8 @@ const customError = (message, status) => {
  * a status code of 404
  */
 const notFoundHandler = (req, res, next) => {
-    const error = new Error(`Not found - ${req.originalUrl}`);
-    error.status = 404;
-    return next(error);
+  const error = customError(`Route not found: ${req.originalUrl}`, 404);
+  next(error);
 };
 
 /**

@@ -22,7 +22,7 @@ POST http://localhost:3000/api/ratings
 Content-Type: application/json
 
 {
-  "rating_value": 1,
+  "rating_value": ,
   "media_id": 3,
   "user_id": 1
 }
