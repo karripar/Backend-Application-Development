@@ -162,6 +162,55 @@ To interact with the API:
     - `400 Bad Request`: Invalid rating value or missing fields.
     - `404 Not Found`: Rating with specified ID does not exist.
 
+---
+
+### Authorization Endpoints
+
+- **POST** `/api/login`
+  - Authenticates a user and generates a JWT token.
+  - **Request Body**:
+    JSON payload with `username` and `password`.
+    ```json
+    {
+      "username": "user123",
+      "password": "password123"
+    }
+    ```
+    - **Response**:
+      - `200 OK`: Login successful, JWT token returned.
+      - `400 Bad Request`: Invalid request body (e.g., missing fields).
+      - `401 Unauthorized`: Invalid username or password.
+
+- **POST** `/api/register`
+  - Registers a new user with `username`, `email`, and `password`.
+  - **Request Body**:
+    JSON payload with `username`, `email`, and `password`.
+    ```json
+    {
+      "username": "newuser",
+      "email": "newuser@example.com",
+      "password": "password123"
+    }
+    ```
+    - **Response**
+     - `201 Created`: User registered successfully.
+     - `400 Bad Request`: Invalid input or missing fields.
+     - `409 Conflict`: Username or email already exists.
+
+- **GET** `/api/me`
+  - Retrieves the currently authenticated user’s information.
+  - **Authorization**: JWT token must be included in the `Authorization` header as `Bearer <token>`.
+  - **Response**:
+    - `200 OK`: User details returned.
+    - `401 Unauthorized`: Missing or invalid JWT token.
+  - **Example Response**:
+    ```json
+    {
+      "id": 1,
+      "username": "user123",
+      "email": "user123@example.com"
+    }
+    ```
 
 # Authorization Rules for Protected Routes
 
@@ -285,6 +334,10 @@ In this application, server-side validation and sanitization are implemented for
   ```json
   { "error": "Validation error: username, email" }
 
+---
+
+### **2. Media Routes (`/api/media`)**
+
 ### **PUT /api/media/:id** - Update Media Item
 
 #### **Validation Rules**:
@@ -306,6 +359,30 @@ In this application, server-side validation and sanitization are implemented for
   ```json
   { "error": "Validation error: title, description" }
 
+
+### **POST /api/media** - Create Media Item
+
+#### **Validation Rules**:
+- **`title`**:
+  - The title must be between 3 and 50 characters in length (`isLength({ min: 3, max: 50 })`).
+  - Leading and trailing whitespace is trimmed (`trim()`).
+- **`description`**:
+  - The description must be a maximum of 255 characters (`isLength({ max: 255 })`).
+  - Leading and trailing whitespace is trimmed (`trim()`).
+- **File**:
+  - The file is uploaded using `upload.single('file')`. The file type and size are validated within the `upload` middleware (e.g., only image files and under a certain size limit).
+
+#### **Sanitization**:
+- All input fields are trimmed to remove excess whitespace.
+- Strings are sanitized by escaping potentially dangerous characters (`escape()`).
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: title, description" }
+
+
 ### **DELETE /api/media/:id** - Delete Media Item
 
 #### **Validation Rules**:
@@ -321,4 +398,81 @@ In this application, server-side validation and sanitization are implemented for
 - Example Error Response:
   ```json
   { "error": "Validation error: id" }
+
+---
+
+### **3. User Routes (`/api/ratings`)**
+
+### **POST** `/api/ratings` - Create Rating
+
+#### **Validation Rules**:
+- **`rating_value`**:
+  - The rating must be an integer between 1 and 5 (`isInt({ min: 1, max: 5 })`).
+
+#### **Sanitization**:
+- The rating value is sanitized by escaping potentially dangerous characters.
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: rating_value" }
+
+
+### **PUT** `/api/ratings/:id` - Update Rating
+
+#### **Validation Rules**:
+- **`rating_value`**:
+  - The rating must be an integer between 1 and 5 (`isInt({ min: 1, max: 5 })`).
+
+#### **Sanitization**:
+- The rating value is sanitized by escaping potentially dangerous characters.
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- If the rating with the specified ID does not exist, a `404 Not Found` response is returned.
+- Example Error Response:
+  ```json
+  { "error": "Validation error: rating_value" }
+
+---
+
+### **4. Authorization routes (`/api/`)**
+
+### **POST** `/api/login` - User Login
+
+#### **Validation Rules**:
+- **`username`**:
+  - The username must be alphanumeric and between 3 and 20 characters in length (`isAlphanumeric()`, `isLength({ min: 3, max: 20 })`).
+- **`password`**:
+  - The password must be at least 8 characters in length (`isLength({ min: 8 })`).
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- If the login is successful, a `200 OK` response is returned with the authentication token.
+- Example Error Response (Validation error):
+  ```json
+  { "error": "Validation error: username, password" }
+
+
+### **POST** `/api/register` - User Registration
+
+#### **Validation Rules**:
+- **`username`**:
+  - The username must be alphanumeric and between 3 and 20 characters in length (`isAlphanumeric()`, `isLength({ min: 3, max: 20 })`).
+- **`password`**:
+  - The password must be at least 8 characters in length (`isLength({ min: 8 })`).
+- **`email`**:
+  - The email must be a valid email format (`isEmail()`).
+
+#### **Sanitization**:
+- **`username`**:
+  - Leading and trailing whitespace is trimmed (`trim()`).
+
+#### **Error Handling**:
+- If validation fails, a `400 Bad Request` response is returned with the error details.
+- If the registration is successful, a `201 Created` response is returned with the user details.
+- Example Error Response (Validation error):
+  ```json
+  { "error": "Validation error: username, password, email" }
 
