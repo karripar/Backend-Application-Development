@@ -7,6 +7,7 @@ import {
   modifyUser,
   checkUsernameOrEmailExists
 } from '../models/user-models.js';
+import bcrypt from 'bcryptjs';
 
 /**
  * Retrieves all users from the database and sends them as a JSON response.
@@ -30,13 +31,10 @@ const getUsers = async (req, res, next) => {
  * @param {Object} res - The response object used to send the response.
  */
 const postUser = async (req, res, next) => {
-  const newUser = {
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    user_level_id: req.body.user_level_id || 1,
-  };
-
+  const newUser = req.body;
+  const salt = await bcrypt.genSalt(10);
+  newUser.password = await bcrypt.hash(newUser.password, salt);
+  console.log('Hash', newUser.password);
   try {
     const newId = await addUser(newUser);
     if (newId) {

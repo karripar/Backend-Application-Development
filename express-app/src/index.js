@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 //import { getUserItemById, getUserItems, postUserItem, modifyUserItem, deleteUserItem } from './users.js';
 import { mediaDocs, userDocs, ratingDocs } from './docs.js';
 import mediaRouter from './routes/mediaRouter.js';
@@ -10,10 +11,12 @@ import authRouter from './routes/auth-router.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
 
+
 const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
 
+app.use(cors());
 app.set('view engine', 'pug');
 app.set('views', 'src/views');
 

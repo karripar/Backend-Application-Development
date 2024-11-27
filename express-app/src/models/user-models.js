@@ -140,18 +140,18 @@ const deleteUser = async (id) => {
 
 
 
-const selectUsernameAndPassword = async (username, password) => {
+const selectUserByUsername = async (username) => {
   // TODO return only user_id
-  const sql = 'SELECT user_id, username, email, user_level_id, created_at FROM users WHERE username = ? AND password = ?';
+  const sql = 'SELECT user_id, username, password, email, user_level_id, created_at FROM users WHERE username = ?';
   try {
-    const [rows] = await promisePool.query(sql, [username, password]);
+    const [rows] = await promisePool.query(sql, [username]);
     if (rows) {
       return rows[0];
     } else {
-      throw new Error('selectUsernameAndPassword, User not found');
+      throw new Error('selectUserByUsername, User not found');
     }
   } catch (e) {
-    console.log('selectUsernameAndPassword', e.message);
+    console.log('selectUserByUsername', e.message);
     throw new Error('Database error: ' + e.message);
   }
 };
@@ -173,4 +173,4 @@ const checkUsernameOrEmailExists = async (username, email, userId) => {
 
 
 
-export { fetchUsers, fetchUserById, addUser, modifyUser, deleteUser, selectUsernameAndPassword, checkUsernameOrEmailExists };
+export { fetchUsers, fetchUserById, addUser, modifyUser, deleteUser, selectUserByUsername, checkUsernameOrEmailExists };
