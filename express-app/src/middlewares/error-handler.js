@@ -8,15 +8,17 @@ import { validationResult } from 'express-validator';
  * @returns {Object} - A JSON object with an error message and a status
  */
 const validationErrorHandler = (req, res, next) => {
-  const errors = validationResult(req);
+  // validation errors can be retrieved from the request object (added by express-validator middleware)
+  //const errors = validationResult(req);
+  const errors = validationResult(req, {strictParams: ['body']});
+  // check if any validation errors
   if (!errors.isEmpty()) {
-      return res.status(400).json({
-          message: 'Validation error',
-          errors: errors.array().map(err => ({
-              field: err.param,
-              message: `${err.msg} in ${err.path}`
-          }))
-      });
+    // console.log('validation errors', errors.array({onlyFirstError: true}));
+    // extract field names & messages from error array (only one error per field)
+    const validationErrors = errors.array({onlyFirstError: true}).map((error) => {
+      return {field: error.path, msg: error.msg};
+    });
+    return next(customError('Invalid input data', 400, validationErrors));
   }
   next();
 };
@@ -26,9 +28,12 @@ const validationErrorHandler = (req, res, next) => {
  * @param {string} status HTTP status code
  * @returns {object} Error object
  */
-const customError = (message, status) => {
+const customError = (message, status, errors) => {
     const error = new Error(message);
     error.status = error.status = Number.isInteger(status) ? status : 500;
+    if (errors) {
+      error.errors = errors;
+    }
     return error
   };
 
