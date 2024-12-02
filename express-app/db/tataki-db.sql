@@ -16,7 +16,7 @@ CREATE TABLE Users (
     username VARCHAR(15) NOT NULL UNIQUE,
     password_hash VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
-    phone_number VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(20),
     user_level_id TINYINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_level_id) REFERENCES UserLevels(level_id)

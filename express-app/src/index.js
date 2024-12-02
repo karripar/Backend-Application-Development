@@ -17,10 +17,12 @@ const port = 3000;
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+
 app.set('view engine', 'pug');
 app.set('views', 'src/views');
 
-app.use(express.json());
+
 
 // Serve static files (HTML, CSS, JS) from the public directory
 app.use(express.static('public'));
@@ -31,9 +33,11 @@ app.use('/uploads', express.static('uploads'));
 // Serve user-related media files
 app.use('/media', express.static('media'));
 
+
 // Serve documentation for the API
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 
 app.use('/docs', express.static('docs')); // Specifically for 'docs' directory
 
@@ -42,6 +46,8 @@ app.get('/readme', (req, res) => {
 });
 
 app.use(express.static(__dirname));
+
+
 
 /**
  * Route to render API documentation for media endpoints.
