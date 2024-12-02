@@ -7,10 +7,26 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "apidoc": "apidoc"
   },
   "author": "karripar",
   "license": "ISC",
+  "apidoc": {
+    "name": "Express example 2024",
+    "version": "1.0.0",
+    "description": "Examples for the course",
+    "title": "Mediashare API Docs",
+    "url": "https://my-apication.example.com/v1",
+    "order": [
+      "Authentication",
+      "User"
+    ],
+    "template": {
+      "withCompare": true,
+      "withGenerator": true
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "eslint": "^9.13.0",
@@ -20,6 +36,7 @@
     "prettier": "3.3.3"
   },
   "dependencies": {
+    "apidoc": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

@@ -1,35 +1,127 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Media Sharing Application</title>
-    <style>
-      body {
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        margin: auto;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-top: 200px;
-        text-align: center;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Sharing Application</title>
+  <style>
+    body {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-top: 50px;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      color: white;
+      width: 60%;
+      height: 80vh;
+      margin: auto;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      /* gradient animation */
+      background-size: 200% 200%;
+      -webkit-animation: gradient 15s ease infinite;
+      -moz-animation: gradient 15s ease infinite;
+      animation: gradient 15s ease infinite;
+      background-image: linear-gradient(45deg, #f3ec78, #af4261, #7b1f3f, #3a1c71);
+
+    }
+
+
+    .links1, .links2 {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .links1 a, .links2 a {
+      color: yellow;
+      font-size: 13px;
+      margin: 5px;
+    }
+
+    .links1 a:hover, .links2 a:hover {
+      color: white;
+    }
+
+    p {
+      margin-block: 10px;
+      padding: 10px;
+    }
+
+
+    @-webkit-keyframes gradient {
+      0% {
+        background-position: 0% 50%;
       }
-    </style>
-  </head>
-  <body>
-    <h1>Media and User Sharing Application with ratings</h1>
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @-moz-keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Media Sharing Express Application</h1>
     <p>
-        Access the API documentation at the following endpoints:<br /><br />
-        <a href="/api/app/media">Media API</a><br />
-        <a href="/api/app/users">User API</a><br />
-        <a href="/api/app/ratings">Ratings API</a><br /><br />
-  
-        Additional documentation:<br />
-        <a href="/docs/index.html">JSDoc Documentation</a><br />
-        <a href="/readme">README File</a> <!-- Link to the rendered README route -->
-      </p>
-  </body>
+      Access the API documentation at the following endpoints:</p><br /><br />
+    <div class="links1">
+    <a href="/api/app/media">Media API</a><br />
+    <a href="/api/app/users">User API</a><br />
+    <a href="/api/app/ratings">Ratings API</a><br /><br />
+    </div>
+    <p>Additional documentation:</p><br />
+    <div class="links2">
+    <a href="/docs/index.html">JSDoc Documentation</a><br />
+    <a href="/readme">README File</a><br> <!-- Link to the rendered README route -->
+    <a href="/apidoc">API Documentation</a> <!-- Link to the rendered API 
+    Documentation route -->
+    </div>
+  </div>
+</body>
+
 </html>

@@ -51,12 +51,91 @@ ratingRouter.route('/media/:id')
  * @param {Object} res - The response object.
  */
 ratingRouter.route('/:id')
-  .get(getRatingById)
-  .put(authenticateToken,
+  .get(
+    /**
+     * @api {get} /ratings/:id Get rating by ID
+     * @apiVersion 1.0.0
+     * @apiName GetRatingById
+     * @apiGroup Ratings
+     * @apiPermission token
+     * 
+     * @apiDescription Get a rating by its ID.
+     * 
+     * @apiParam {Number} id Rating ID.
+     * 
+     * @apiSuccess {Object} rating Rating info.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "rating": {
+     * "rating_id": 1,
+     * "rating_value": 5,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * 
+     */
+    getRatingById)
+  .put(
+    /**
+     * @api {put} /ratings/:id Modify rating by ID
+     * @apiVersion 1.0.0
+     * @apiName PutRatingById
+     * @apiGroup Ratings
+     * @apiPermission token
+     * 
+     * @apiDescription Modify a rating by its ID.
+     * 
+     * @apiParam {Number} rating_value Rating value.
+     * 
+     * @apiParamExample {json} Request-Example:
+     * {
+     * "rating_value": 4
+     * }
+     * 
+     * @apiSuccess {String} message Rating updated successfully.
+     * @apiSuccess {Object} rating Updated rating info.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "message": "Rating updated successfully",
+     * "rating": {
+     * "rating_id": 1,
+     * "rating_value": 4,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * 
+     * @apiUse token
+     */
+    authenticateToken,
     body('rating_value').isInt({min: 1, max: 5}),
     validationErrorHandler,
     modifyRatingById)
   .delete(
+    /**
+     * @api {delete} /ratings/:id Delete rating by ID
+     * @apiVersion 1.0.0
+     * @apiName DeleteRatingById
+     * @apiGroup Ratings
+     * @apiPermission token
+     * 
+     * @apiDescription Delete a rating by its ID.
+     * 
+     * @apiSuccess {String} message Rating deleted successfully.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "message": "Rating deleted successfully"
+     * }
+     * 
+     * @apiUse token
+     */
     authenticateToken, 
     deleteRatingById);
 

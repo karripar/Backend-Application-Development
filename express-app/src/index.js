@@ -34,6 +34,12 @@ app.use('/uploads', express.static('uploads'));
 app.use('/media', express.static('media'));
 
 
+app.use('/apidoc', express.static('doc')); // Specifically for 'apidoc' directory
+
+app.get('/apidoc', (req, res) => {
+    res.sendFile(path.join(__dirname, 'doc', 'index'));
+});
+
 // Serve documentation for the API
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
