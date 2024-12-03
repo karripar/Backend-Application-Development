@@ -9,12 +9,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRouter from './routes/auth-router.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
-
+import {rateLimit} from 'express-rate-limit';
 
 
 const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 30 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
 
 app.use(cors());
 app.use(express.json());

@@ -20,12 +20,6 @@ const mediaRouter = express.Router();
 
 // Media resource endpoints
 
-/**
- * Route to get all media items.
- * @function
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- */
 mediaRouter
   .route('/')
   .get(getItems)
@@ -86,7 +80,7 @@ mediaRouter
      * @apiVersion 1.0.0
      * @apiName GetMedia
      * @apiGroup Media
-     * @apiPermission token
+     * @apiPermission All
      * 
      * @apiDescription Get a media item by ID.
      * 
@@ -103,9 +97,7 @@ mediaRouter
      * "userId": 1,
      * "createdAt": "2021-06-25T18:53:05.000Z"
      * }
-     * 
-     * @apiUse token
-     * @apiUse UnauthorizedError
+     *
      */
     getItemById)
   .put(

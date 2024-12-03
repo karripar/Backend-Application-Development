@@ -58,8 +58,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "Nesssssser",
-  "password": "nedndndnndnd"
+  "username": "testikayttaja",
+  "password": "vaikeasalasana"
 }
 
 ### Get my user info
@@ -71,7 +71,7 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "username": "Nesssssser",
-  "password": "nedndndnndnd",
-  "email": "newur@example.com"
+  "username": "testikayttaja",
+  "password": "vaikeasalasana",
+  "email": "testi@example.com"
 }

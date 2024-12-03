@@ -16,40 +16,142 @@ const ratingRouter = express.Router();
  */
 ratingRouter
   .route('/')
-  .get(getRatings)
+  .get(
+    /**
+     * @api {get} /ratings Get all ratings
+     * @apiVersion 1.0.0
+     * @apiName GetRatings
+     * @apiGroup Ratings
+     * @apiPermission All
+     * 
+     * @apiDescription Get all ratings.
+     * 
+     * @apiSuccess {Object[]} ratings List of ratings.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "ratings": [
+     * {
+     * "rating_id": 1,
+     * "rating_value": 5,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * ]
+     * 
+     * */
+    getRatings)
   .post(
+    /**
+     * @api {post} /ratings Create new rating
+     * @apiVersion 1.0.0
+     * @apiName PostRating
+     * @apiGroup Ratings
+     * @apiPermission All
+     *
+     * @apiDescription Create a new rating.
+     * 
+     * @apiParam {Number} rating_value Rating value.
+     * @apiParam {Number} media_id Media ID.
+     * 
+     * @apiParamExample {json} Request-Example:
+     * {
+     * "rating_value": 5,
+     * "media_id": 1
+     * }
+     * 
+     * @apiSuccess {String} message Rating created successfully.
+     * @apiSuccess {Object} rating Created rating info.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 201 Created
+     * {
+     * "message": "Rating created successfully",
+     * "rating": {
+     * "rating_id": 1,
+     * "rating_value": 5,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * 
+     * 
+     * */
     body('rating_value').isInt({min: 1, max: 5}),
     validationErrorHandler,
     postRating);
 
 
-/** 
- * Route to get all ratings by a specific user.
- * @function
- * @param {Object} req - The request object containing the user ID in the URL parameters.
- * @param {Object} res - The response object used to send the JSON response.
- */
+
 ratingRouter.route('/user/:id')
-  .get(getRatingsByUserId);
+  .get(
+    /**
+     * @api {get} /ratings/user/:id Get ratings by user ID
+     * @apiVersion 1.0.0
+     * @apiName GetRatingsByUserId
+     * @apiGroup Ratings
+     * @apiPermission All
+     * 
+     * @apiDescription Get all ratings for a specific user.
+     *  
+     * @apiParam {Number} id User ID.
+     * 
+     * @apiSuccess {Object[]} ratings List of ratings.
+     *  
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "ratings": [
+     * {
+     * "rating_id": 1,
+     * "rating_value": 5,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * ]
+     * 
+     * */
+    getRatingsByUserId);
 
 
-/**
- * Route to get all ratings by a specific media.
- * @function
- * @param {Object} req - The request object containing the media ID in the URL parameters.
- * @param {Object} res - The response object used to send the JSON response.
- */
+
 ratingRouter.route('/media/:id')
-  .get(getRatingsByMediaId);
+  .get(
+    /**
+     * @api {get} /ratings/media/:id Get ratings by media ID
+     * @apiVersion 1.0.0
+     * @apiName GetRatingsByMediaId
+     * @apiGroup Ratings
+     * @apiPermission All
+     * 
+     * 
+     * @apiDescription Get all ratings for a specific media item.
+     * 
+     * @apiParam {Number} id Media ID.
+     * 
+     * @apiSuccess {Object[]} ratings List of ratings.
+     * 
+     * @apiSuccessExample Success-Response:
+     * HTTP/1.1 200 OK
+     * {
+     * "ratings": [
+     * {
+     * "rating_id": 1,
+     * "rating_value": 5,
+     * "media_id": 1,
+     * "user_id": 1,
+     * "createdAt": "2021-06-25T18:53:05.000Z",
+     * }
+     * ]
+     * 
+     * */
+    getRatingsByMediaId);
 
 
 
-/**
- * Route to get, modify, or delete a rating by ID.
- * @function
- * @param {Object} req - The request object containing rating ID in URL params.
- * @param {Object} res - The response object.
- */
 ratingRouter.route('/:id')
   .get(
     /**
@@ -57,7 +159,7 @@ ratingRouter.route('/:id')
      * @apiVersion 1.0.0
      * @apiName GetRatingById
      * @apiGroup Ratings
-     * @apiPermission token
+     * @apiPermission All
      * 
      * @apiDescription Get a rating by its ID.
      * 

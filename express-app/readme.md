@@ -4,11 +4,13 @@ This project provides a RESTful API with endpoints for managing user data, media
 
 ## Documentation
 
-You can access the API documentation rendered with Pug templates at the following URLs when the server is running. 
+You can access the API documentation at the following URLs when the server is running. 
 
-- [Media API Documentation](http://localhost:3000/api/app/media): Brief documentation for the media endpoints.
-- [User API Documentation](http://localhost:3000/api/app/users): Brief documentation for the user endpoints.
-- [Ratings API Documentation](http://localhost:3000/api/app/ratings): Brief documentation for the ratings endpoints.
+- [ApiDoc API Documentation](http://localhost:3000/apidoc): Extensive API documentation.
+
+## Important to know
+ - Each API-Endpoint is limited to 30 requests by a client within a 15 minute window.
+ - Limiting the number of requests was implemented with `express-rate-limit`.
 
 ## Usage Instructions
 

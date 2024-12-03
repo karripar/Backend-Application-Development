@@ -67,8 +67,6 @@ authRouter.route('/login').post(
  *        "user_level_id": 2
  *      }
  *    }
- *
- * @apiUse UnauthorizedError
  */
   body('username').isAlphanumeric().isLength({min: 3, max: 20}),
   body('password').isLength({min: 8}),
@@ -94,7 +92,7 @@ authRouter.route('/me').get(
    * "user": {
    * "user_id": 21,
    * "username": "johnd",
-   * "email": "
+   * "email": "johnd@gmail.com",
    * "user_level_id": 2
    * }
    * 
@@ -137,8 +135,6 @@ authRouter
      * "message": "User added",
      * "id": 21
      * }
-     *  
-     * @apiUse UnauthorizedError
      * 
      */
     body('username').trim().isAlphanumeric().isLength({min: 3, max: 20}),

@@ -6,5 +6,5 @@ uploads/*
 !uploads/.gitkeep
 # ignore .env file
 .env
-
+docs/
 dist/
